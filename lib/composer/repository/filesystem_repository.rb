@@ -19,7 +19,7 @@ module Composer
     #
     # Ruby Authors:
     # Ioannis Kappas <ikappas@devworks.gr>
-    class FilesystemRepository < Composer::Repository::WritableArrayRepository
+    class FilesystemRepository < Composer::Repository::WritableHashRepository
 
       # Initializes filesystem repository.
       # @param [Composer::Json::JsonFile] repository_file repository json file
@@ -58,7 +58,7 @@ module Composer
       # Initializes repository (reads file, or remote address).
       def initialize_repository
         super
-        return unless @file.exists
+        return unless @file.exists?
 
         begin
           packages_data = @file.read
@@ -73,7 +73,7 @@ module Composer
                 [#{e.class}] #{e.message}"
         end
 
-        loader = Composer::Package::Loader::ArrayLoader.new(nil, true)
+        loader = Composer::Package::Loader::HashLoader.new(nil, true)
         packages_data.each do |package_data|
           package = loader.load(package_data)
           add_package(package)
