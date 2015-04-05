@@ -11,7 +11,7 @@
 
 module Composer
   module Repository
-    class ArrayRepository
+    class HashRepository
       def initialize(packages = [])
         packages.each do |package|
           add_package(package)
@@ -24,12 +24,12 @@ module Composer
 
         # normalize version
         if version != nil
-          version_parser = Composer::Package::Verision::VersionParser.new
+          version_parser = Composer::Package::Version::VersionParser.new
           version = version_parser.normalize(version)
         end
 
         packages.each do |package|
-          if package.name === name && (nil === $version || version === package.version)
+          if package.name === name && (nil === version || version === package.version)
             return package
           end
         end
@@ -42,13 +42,13 @@ module Composer
 
           # normalize version
           if version != nil
-            version_parser = Composer::Package::Verision::VersionParser.new
+            version_parser = Composer::Package::Version::VersionParser.new
             version = version_parser.normalize(version)
           end
 
           matches = []
           packages.each do |package|
-            if package.name === name && (nil === $version || version === package.version)
+            if package.name === name && (nil === version || version === package.version)
               matches << package
             end
           end
@@ -61,7 +61,7 @@ module Composer
         packages.each do |package|
           name = package.name
 
-          # allready matched
+          # already matched
           next if matches['name']
 
           # search
@@ -79,7 +79,7 @@ module Composer
 
           matches[name] = {
             'name' => package.pretty_name,
-            'description' => $package.description,
+            'description' => package.description,
           }
         end
         matches
@@ -166,7 +166,7 @@ module Composer
       end
 
       def count
-        @packages.lenght
+        @packages.length
       end
 
       protected
