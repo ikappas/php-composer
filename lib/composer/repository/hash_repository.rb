@@ -23,17 +23,21 @@ module Composer
         name = name.downcase
 
         # normalize version
-        if version != nil
+        if !version.nil?
           version_parser = Composer::Package::Version::VersionParser.new
           version = version_parser.normalize(version)
         end
 
+        match = nil
         packages.each do |package|
-          if package.name === name && (nil === version || version === package.version)
-            return package
+          if package.name === name
+            if version.nil? || package.version === version
+              match = package
+              break
+            end
           end
         end
-
+        match
       end
 
       def find_packages(name, version = nil)
@@ -49,40 +53,37 @@ module Composer
           matches = []
           packages.each do |package|
             if package.name === name && (nil === version || version === package.version)
-              matches << package
+              matches.push(package)
             end
           end
           matches
       end
 
-      def search(query, full_search = false)
+      def search(query, mode = 0)
         regex = /(?:#{query.split(/\s+/).join('|')})/i
         matches = {}
         packages.each do |package|
           name = package.name
 
           # already matched
-          next if matches['name']
+          next if matches[name]
 
           # search
-          if full_search
-            next unless (
-              package.instance_of?(Composer::Package::CompletePackage) &&
-              regex.match("#{package.keywords.join(' ')} #{package.description}")
-            )
-          else
-            next unless (
-              full_search == false &&
-              regex.match(name)
-            )
+          unless regex.match(name)
+            unless mode === Composer::Repository::BaseRepository::SEARCH_FULLTEXT &&
+                package.instance_of?(Composer::Package::CompletePackage) &&
+                regex.match("#{package.keywords ? package.keywords.join(' ') : ''} #{package.description ? package.description : ''}")
+              next
+            end
           end
 
           matches[name] = {
             'name' => package.pretty_name,
             'description' => package.description,
           }
+
         end
-        matches
+        matches.values
       end
 
       def package?(package)
