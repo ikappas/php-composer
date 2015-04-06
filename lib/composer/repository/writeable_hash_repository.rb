@@ -25,9 +25,11 @@ module Composer
       end
 
       def write
+        # implement inside child
       end
 
       def reload
+        # implement inside child
       end
 
       def canonical_packages
