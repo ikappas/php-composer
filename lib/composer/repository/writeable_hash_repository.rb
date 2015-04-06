@@ -48,7 +48,7 @@ module Composer
           while package.instance_of?(Composer::Package::AliasPackage)
             package = package.alias_of
           end
-          results[] = package
+          results.push(package)
         end
 
         results
