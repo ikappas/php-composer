@@ -28,7 +28,7 @@ module Composer
           raise ArgumentError,
                 'repository_file must be specified'
         end
-        unless repository_file.is_a(Composer::Json::JsonFile)
+        unless repository_file.is_a?(Composer::Json::JsonFile)
           raise TypeError,
                 'repository_file type must be a \
                 Composer::Json::JsonFile or superclass'
@@ -62,7 +62,7 @@ module Composer
 
         begin
           packages_data = @file.read
-          unless packages_data.is_a(Hash)
+          unless packages_data.is_a?(Hash)
             raise UnexpectedValueError,
                   'Could not parse package list from the repository'
           end
