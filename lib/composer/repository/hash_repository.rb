@@ -11,7 +11,7 @@
 
 module Composer
   module Repository
-    class HashRepository
+    class HashRepository < Composer::Repository::BaseRepository
       def initialize(packages = [])
         packages.each do |package|
           add_package(package)
