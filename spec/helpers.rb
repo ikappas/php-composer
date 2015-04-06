@@ -1,10 +1,11 @@
 module Helpers
 
-  def get_version_parser()
-    if !@@parser
-      @@parser = Composer::Package::Version::VersionParser.new
+  def get_version_parser
+    if @parser
+      return @parser
     end
-    @@parser
+    @parser = Composer::Package::Version::VersionParser.new
+    @parser
   end
 
   def get_version_constraint(operator, version)
