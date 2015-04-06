@@ -37,17 +37,15 @@ module Composer
         packages_by_name = {}
         packages_uncanonicalized.each do |package|
           if !packages_by_name.key?(package.name) ||
-            packages_by_name[package.name].instance_of(Composer::Package::AliasPackage)
-
+            packages_by_name[package.name].instance_of?(Composer::Package::AliasPackage)
             packages_by_name[package.name] = package
-
           end
         end
 
         # unfold aliased packages
         results = []
         packages_by_name.each do |name, package|
-          while package.instance_of(Composer::Package::AliasPackage)
+          while package.instance_of?(Composer::Package::AliasPackage)
             package = package.alias_of
           end
           results[] = package

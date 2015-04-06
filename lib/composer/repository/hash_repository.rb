@@ -67,7 +67,7 @@ module Composer
           # search
           if full_search
             next unless (
-              package.instance_of(Composer::Package::CompletePackage) &&
+              package.instance_of?(Composer::Package::CompletePackage) &&
               regex.match("#{package.keywords.join(' ')} #{package.description}")
             )
           else
@@ -125,7 +125,7 @@ module Composer
 
         @packages << package
 
-        if package.instance_of(Composer::Package::AliasPackage)
+        if package.instance_of?(Composer::Package::AliasPackage)
           aliased_package = package.alias_of
           if aliased_package.repository === nil
             add_package(aliased_package)
@@ -178,7 +178,7 @@ module Composer
       end
 
       def create_alias_package(package, version, pretty_version)
-        if package.instance_of(Composer::Package::AliasPackage)
+        if package.instance_of?(Composer::Package::AliasPackage)
           alias_of = package.alias_of
         else
           alias_of = package
