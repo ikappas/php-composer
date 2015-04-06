@@ -90,7 +90,7 @@ module Composer
           raise ArgumentError,
                 'package must be specified'
         end
-        unless package.is_a(Composer::Package::BasePackage)
+        unless package.is_a?(Composer::Package::BasePackage)
           raise TypeError,
                 'package must be a class or superclass of \
                 Composer::Package::Package'
@@ -113,7 +113,7 @@ module Composer
           raise ArgumentError,
                 'package must be specified'
         end
-        unless package.is_a(Composer::Package::BasePackage)
+        unless package.is_a?(Composer::Package::BasePackage)
           raise TypeError,
                 'package must be a class or superclass of \
                 Composer::Package::Package'
@@ -142,7 +142,7 @@ module Composer
           raise ArgumentError,
                 'package must be specified'
         end
-        unless package.is_a(Composer::Package::BasePackage)
+        unless package.is_a?(Composer::Package::BasePackage)
           raise TypeError,
                 'package must be a class or superclass of \
                 Composer::Package::Package'
