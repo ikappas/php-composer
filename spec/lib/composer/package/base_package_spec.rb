@@ -4,7 +4,7 @@ describe Composer::Package::BasePackage do
 
   it 'should set same repository' do
     package = Composer::Package::BasePackage.new('foo')
-    repository = Composer::Repository::ArrayRepository.new()
+    repository = Composer::Repository::HashRepository.new()
     package.repository = repository
 
     begin
@@ -17,10 +17,10 @@ describe Composer::Package::BasePackage do
 
   it 'should not set other repository' do
     package = Composer::Package::BasePackage.new('foo')
-    repository = Composer::Repository::ArrayRepository.new()
+    repository = Composer::Repository::HashRepository.new()
     package.repository = repository
 
-    expect { package.repository = Composer::Repository::ArrayRepository.new() }.to raise_error(Composer::LogicError)
+    expect { package.repository = Composer::Repository::HashRepository.new() }.to raise_error(Composer::LogicError)
   end
 
 end
