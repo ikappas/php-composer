@@ -51,18 +51,19 @@ module Composer
       end
 
       def find_package(name, version = nil)
+        package = nil
         @repositories.each do |repo|
           package = repo.find_package(name, version)
-          return package unless package.nil?
+          break unless package.nil?
         end
+        package
       end
 
       def find_packages(name, version = nil)
         packages = []
         @repositories.each do |repo|
-          if (repo_packages = repo.find_packages(name, version))
-            packages.merge(repo_packages)
-          end
+          repo_packages = repo.find_packages(name, version)
+          repo_packages.map { |p| packages.push(p) } unless repo_packages.empty?
         end
         packages
       end
@@ -70,21 +71,34 @@ module Composer
       def search(query, mode = 0)
         matches = []
         @repositories.each do |repo|
-          if (repo_matches = repo.search(query, mode))
-            matches.merge(repo_matches)
-          end
+          repo_matches = repo.search(query, mode)
+          repo_matches.map{ |m| matches.push(m) } unless repo_matches.empty?
         end
         matches
       end
 
+      # def filter_packages(callback, class_name = 'Composer::Package::Package')
+      #   @repositories.each do |repo|
+      #     if (false === repo.filter_packages(callback, class_name))
+      #       return false
+      #     end
+      #   end
+      #   true
+      # end
+
       def packages
         packages = []
         @repositories.each do |repo|
-          if (repo_packages = repo.packages)
-            packages.merge(repo_packages)
-          end
+          repo_packages = repo.packages
+          repo_packages.map { |p| packages.push(p) } unless repo_packages.empty?
         end
         packages
+      end
+
+      def remove_package(package)
+        @repositories.each do |repo|
+          repo.remove_package(package)
+        end
       end
 
       def count
@@ -100,12 +114,12 @@ module Composer
           raise ArgumentError,
                 'repository must be specified'
         end
-        unless repository.instance_of?(Composer::Repository::RepositoryBase)
+        unless repository.is_a?(Composer::Repository::BaseRepository)
           raise TypeError,
                 'repository type must be a \
                 Composer::Repository::BaseRepository or superclass'
         end
-        if repository.instance_of?(self)
+        if repository.instance_of?(Composer::Repository::CompositeRepository)
           repository.repositories.each do |repo|
             add_repository(repo)
           end
