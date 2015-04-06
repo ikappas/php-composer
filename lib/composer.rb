@@ -44,8 +44,8 @@ require 'composer/package/version/version_selector'
 # Dir[File.join(File.dirname(__FILE__), "composer/package/version/*.rb")].each {|file| require file }
 
 # /repository
-require 'composer/repository/array_repository'
-require 'composer/repository/writeable_array_repository'
+require 'composer/repository/hash_repository'
+require 'composer/repository/writeable_hash_repository'
 require 'composer/repository/filesystem_repository'
 
 module Composer
