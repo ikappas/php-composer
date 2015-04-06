@@ -261,8 +261,8 @@ module Composer
         @alias_of.archive_excludes
       end
 
-      def is_abandoned
-        @alias_of.is_abandoned
+      def is_abandoned?
+        @alias_of.is_abandoned?
       end
 
       def replacement_package
