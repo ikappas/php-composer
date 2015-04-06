@@ -37,10 +37,9 @@ module Composer
         @file = repository_file
       end
 
-
       def reload
         @packages = nil
-        configure
+        initialize_repository
       end
 
       # Writes writable repository.
