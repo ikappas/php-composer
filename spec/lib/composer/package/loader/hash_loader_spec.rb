@@ -60,9 +60,9 @@ describe Composer::Package::Loader::HashLoader do
       'version_normalized' => '1.2.3.0',
       'description' => 'Foo bar',
       'type' => 'library',
-      'keywords' => [ 'a', 'b', 'c' ],
+      'keywords' => %w{a b c},
       'homepage' => 'http://example.com',
-      'license' => [ 'MIT', 'GPLv3' ],
+      'license' => %w{MIT GPLv3},
       'authors' => [
         { 'name' => 'Bob', 'email' => 'bob@example.org', 'homepage' => 'example.org', 'role' => 'Developer' },
       ],
