@@ -62,7 +62,7 @@ module Composer
 
         begin
           packages_data = @file.read
-          unless packages_data.is_a?(Hash)
+          unless packages_data.is_a?(Array)
             raise UnexpectedValueError,
                   'Could not parse package list from the repository'
           end
