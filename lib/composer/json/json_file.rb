@@ -52,8 +52,8 @@ module Composer
       #
       # Returns:
       # true if this json file exists; otherwise false.
-      def exist?
-        File.exist?(path)
+      def exists?
+        File.exists?(path)
       end
 
       # Reads the json file.
@@ -80,7 +80,7 @@ module Composer
         dir = File.dirname(@path)
 
         unless File.directory?(storage_path)
-          if File.exist?(dir)
+          if File.exists?(dir)
             raise UnexpectedValueError,
                   "#{dir} exists and is not a directory."
           end

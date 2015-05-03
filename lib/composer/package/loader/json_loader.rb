@@ -28,7 +28,7 @@ module Composer
         def load(json)
           if json.instance_of?(Composer::Json::JsonFile)
             config = json.read
-          elsif File.exist?(json)
+          elsif File.exists?(json)
             config = Composer::Json::JsonFile.parse_json(
               File.open(filepath, "r") { |f| f.read },
               json
