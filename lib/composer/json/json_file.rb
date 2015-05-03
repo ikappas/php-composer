@@ -91,7 +91,7 @@ module Composer
         while retries >= 0
           begin
             file_ending = options & JSON_PRETTY_PRINT ? "\n" : ''
-            File.open(path, 'w') do |f|
+            File.open(@path, 'w') do |f|
               content = encode(hash, options) + file_ending
               f.write(content)
             end
