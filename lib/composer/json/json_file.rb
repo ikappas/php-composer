@@ -79,7 +79,7 @@ module Composer
       def write(hash, options = 448)
         dir = File.dirname(@path)
 
-        unless File.directory?(storage_path)
+        unless File.directory?(dir)
           if File.exists?(dir)
             raise UnexpectedValueError,
                   "#{dir} exists and is not a directory."
