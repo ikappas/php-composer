@@ -53,7 +53,7 @@ module Composer
       # Returns:
       # true if this json file exists; otherwise false.
       def exists?
-        File.exists?(path)
+        File.exists?(@path)
       end
 
       # Reads the json file.
@@ -84,26 +84,23 @@ module Composer
             raise UnexpectedValueError,
                   "#{dir} exists and is not a directory."
           end
-          FileUtils.mkdir_p(dir, 0777)
+          FileUtils.mkdir_p(dir, mode: 0777)
         end
 
         retries = 3
         while retries >= 0
           begin
-            file_ending = options & JSON_PRETTY_PRINT ? "\n" : ''
+            file_ending = options & JsonFormatter::JSON_PRETTY_PRINT ? "\n" : ''
             File.open(@path, 'w') do |f|
-              content = encode(hash, options) + file_ending
+              content = JsonFile::encode(hash, options) + file_ending
               f.write(content)
             end
             break
 
           rescue Exception => e
-            if retries
-              retries -= 1
-              sleep 0.5
-            else
-              raise e
-            end
+            raise e unless retries > 0
+            retries -= 1
+            sleep 0.5
           end
         end
 
