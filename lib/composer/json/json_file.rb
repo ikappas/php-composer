@@ -70,7 +70,7 @@ module Composer
           json = File.open(@path, 'r') { |f| f.read }
         end
 
-        parse_json(json, @path)
+        JsonFile::parse_json(json, @path)
 
       rescue Exception => e
         raise e
@@ -239,7 +239,7 @@ module Composer
           end
 
           if data.nil? && last_error != JSON_ERROR_NONE
-            validate_syntax(json, file)
+            JsonFile::validate_syntax(json, file)
             raise JSON::ParserError,
                 "\"#{file}\" does not contain valid JSON\n
                 #{last_error.message}"
