@@ -1,3 +1,5 @@
+require_relative '../../../spec_helper'
+
 describe Composer::Json::JsonFormatter do
 
   JsonFormatter = Composer::Json::JsonFormatter

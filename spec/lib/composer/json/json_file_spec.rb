@@ -1,6 +1,9 @@
+require_relative '../../../spec_helper'
+
 describe Composer::Json::JsonFile do
 
   JsonFile = Composer::Json::JsonFile
+  JsonFormatter = Composer::Json::JsonFormatter
 
   # it 'should raise an exception for extra comma detection' do
   #   params.merge!(target_type: 'invalid')
@@ -130,32 +133,32 @@ describe Composer::Json::JsonFile do
   end
 
   it 'OnlyUnicode' do
-    json = '"\\\\\\/ƌ"'
-    data = "\\/ƌ"
+    data = %{\\/ƌ}
+    json = %{"\\\\/ƌ"}
     # $this->assertJsonFormat('"\\\\\\/ƌ"', data, JsonFile::JSON_UNESCAPED_UNICODE)
     options = JsonFormatter::JSON_UNESCAPED_UNICODE
     expect(JsonFile::encode(data, options)).to be == json
   end
 
   it 'EscapedSlashes' do
-    json = '"\\\\\\/foo"'
-    data = "\\/foo"
+    data = %{\\/foo}
+    json = %{"\\\\/foo"}
     options = 0
     expect(JsonFile::encode(data, options)).to be == json
     # $this->assertJsonFormat('"\\\\\\/foo"', data, 0)
   end
 
   it 'EscapedBackslashes' do
-    json = '"a\\\\b"'
-    data = "a\\b"
+    data = %{a\\b}
+    json = %{"a\\\\b"}
     options = 0
     expect(JsonFile::encode(data, options)).to be == json
     # $this->assertJsonFormat('"a\\\\b"', data, 0)
   end
 
   it 'EscapedUnicode' do
-    json = '"\\u018c"'
     data = 'ƌ'
+    json = %{"\u018c"}
     options = 0
     expect(JsonFile::encode(data, options)).to be == json
     # $this->assertJsonFormat('"\\u018c"', data, 0)
@@ -163,7 +166,7 @@ describe Composer::Json::JsonFile do
 
   it 'DoubleEscapedUnicode' do
     # jsonFile = new JsonFile('composer.json')
-    data = ["Zdjęcia","hjkjhl\\u0119kkjk"]
+    data = ["Zdjęcia","hjkjhl\u0119kkjk"]
     encoded_data = JsonFile::encode(data)
     double_encoded_data = JsonFile.encode({ 't' => encoded_data })
     decoded_data = JSON::parse(double_encoded_data)
@@ -171,4 +174,20 @@ describe Composer::Json::JsonFile do
     expect(double_data).to be == data
   end
 
+  it '#write succeeds' do
+    data = { "test" => "test" }
+    jsonFile = JsonFile.new(
+        File.expand_path('../../../../fixtures/test.json', __FILE__)
+    )
+    jsonFile.write(data)
+  end
+
+  it '#read succeeds' do
+    data = { "test" => "test" }
+    jsonFile = JsonFile.new(
+        File.expand_path('../../../../fixtures/test.json', __FILE__)
+    )
+    read_data = jsonFile.read
+    expect(read_data).to be == data
+  end
 end

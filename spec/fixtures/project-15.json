@@ -1,0 +1,446 @@
+{
+  "packages": {
+    "toolset/wp-views": {
+      "1.1.3.1": {
+        "name": "toolset/wp-views",
+        "description": "A powerful query and render engine. In non-geek terms, let’s you display whatever content in whatever way you choose.",
+        "version": "1.1.3.1",
+        "version_normalized": "1.1.3.1",
+        "uid": 3272292403,
+        "source": {
+          "url": "git@gitlab.devworks.gr:toolset/wp-views.git",
+          "type": "git",
+          "reference": "3e0c636a483682b74618e42147207586921a2239"
+        },
+        "dist": {
+          "url": "https://gitlab.devworks.gr/toolset/wp-views/repository/archive.zip?ref=1.1.3.1",
+          "type": "zip"
+        },
+        "type": "wordpress-plugin",
+        "homepage": "https://gitlab.devworks.gr/toolset/wp-views",
+        "keywords": [
+          "WordPress",
+          "Plugin"
+        ]
+      },
+      "1.1.3.2": {
+        "name": "toolset/wp-views",
+        "description": "A powerful query and render engine. In non-geek terms, let’s you display whatever content in whatever way you choose.",
+        "version": "1.1.3.2",
+        "version_normalized": "1.1.3.2",
+        "uid": 2400487588,
+        "source": {
+          "url": "git@gitlab.devworks.gr:toolset/wp-views.git",
+          "type": "git",
+          "reference": "814299a1a92652ce88a0d6d840a4f7366bbef6da"
+        },
+        "dist": {
+          "url": "https://gitlab.devworks.gr/toolset/wp-views/repository/archive.zip?ref=1.1.3.2",
+          "type": "zip"
+        },
+        "type": "wordpress-plugin",
+        "homepage": "https://gitlab.devworks.gr/toolset/wp-views",
+        "keywords": [
+          "WordPress",
+          "Plugin"
+        ]
+      },
+      "1.1.4": {
+        "name": "toolset/wp-views",
+        "description": "A powerful query and render engine. In non-geek terms, let’s you display whatever content in whatever way you choose.",
+        "version": "1.1.4",
+        "version_normalized": "1.1.4.0",
+        "uid": 1713868907,
+        "source": {
+          "url": "git@gitlab.devworks.gr:toolset/wp-views.git",
+          "type": "git",
+          "reference": "1a3419f02c3e79c8e50d1c26c2f71eeefda5d9fe"
+        },
+        "dist": {
+          "url": "https://gitlab.devworks.gr/toolset/wp-views/repository/archive.zip?ref=1.1.4",
+          "type": "zip"
+        },
+        "type": "wordpress-plugin",
+        "homepage": "https://gitlab.devworks.gr/toolset/wp-views",
+        "keywords": [
+          "WordPress",
+          "Plugin"
+        ]
+      },
+      "1.1.4.1": {
+        "name": "toolset/wp-views",
+        "description": "A powerful query and render engine. In non-geek terms, let’s you display whatever content in whatever way you choose.",
+        "version": "1.1.4.1",
+        "version_normalized": "1.1.4.1",
+        "uid": 3768065776,
+        "source": {
+          "url": "git@gitlab.devworks.gr:toolset/wp-views.git",
+          "type": "git",
+          "reference": "5f291fe90baed6c55f0119227e001230f52aabd0"
+        },
+        "dist": {
+          "url": "https://gitlab.devworks.gr/toolset/wp-views/repository/archive.zip?ref=1.1.4.1",
+          "type": "zip"
+        },
+        "type": "wordpress-plugin",
+        "homepage": "https://gitlab.devworks.gr/toolset/wp-views",
+        "keywords": [
+          "WordPress",
+          "Plugin"
+        ]
+      },
+      "1.2": {
+        "name": "toolset/wp-views",
+        "description": "A powerful query and render engine. In non-geek terms, let’s you display whatever content in whatever way you choose.",
+        "version": "1.2",
+        "version_normalized": "1.2.0.0",
+        "uid": 2204540587,
+        "source": {
+          "url": "git@gitlab.devworks.gr:toolset/wp-views.git",
+          "type": "git",
+          "reference": "d3e938b525bd8355c962ad9621d34d7a99df2c2a"
+        },
+        "dist": {
+          "url": "https://gitlab.devworks.gr/toolset/wp-views/repository/archive.zip?ref=1.2",
+          "type": "zip"
+        },
+        "type": "wordpress-plugin",
+        "homepage": "https://gitlab.devworks.gr/toolset/wp-views",
+        "keywords": [
+          "WordPress",
+          "Plugin"
+        ]
+      },
+      "1.2.1": {
+        "name": "toolset/wp-views",
+        "description": "A powerful query and render engine. In non-geek terms, let’s you display whatever content in whatever way you choose.",
+        "version": "1.2.1",
+        "version_normalized": "1.2.1.0",
+        "uid": 1861528525,
+        "source": {
+          "url": "git@gitlab.devworks.gr:toolset/wp-views.git",
+          "type": "git",
+          "reference": "92e7d451eee10584dde569d2bd8665c9fcb2005a"
+        },
+        "dist": {
+          "url": "https://gitlab.devworks.gr/toolset/wp-views/repository/archive.zip?ref=1.2.1",
+          "type": "zip"
+        },
+        "type": "wordpress-plugin",
+        "homepage": "https://gitlab.devworks.gr/toolset/wp-views",
+        "keywords": [
+          "WordPress",
+          "Plugin"
+        ]
+      },
+      "1.2.2": {
+        "name": "toolset/wp-views",
+        "description": "A powerful query and render engine. In non-geek terms, let’s you display whatever content in whatever way you choose.",
+        "version": "1.2.2",
+        "version_normalized": "1.2.2.0",
+        "uid": 3829062377,
+        "source": {
+          "url": "git@gitlab.devworks.gr:toolset/wp-views.git",
+          "type": "git",
+          "reference": "19a046a9a7da387ab4ef9881fe8fb6051d19768c"
+        },
+        "dist": {
+          "url": "https://gitlab.devworks.gr/toolset/wp-views/repository/archive.zip?ref=1.2.2",
+          "type": "zip"
+        },
+        "type": "wordpress-plugin",
+        "homepage": "https://gitlab.devworks.gr/toolset/wp-views",
+        "keywords": [
+          "WordPress",
+          "Plugin"
+        ]
+      },
+      "1.2.3": {
+        "name": "toolset/wp-views",
+        "description": "A powerful query and render engine. In non-geek terms, let’s you display whatever content in whatever way you choose.",
+        "version": "1.2.3",
+        "version_normalized": "1.2.3.0",
+        "uid": 1771141432,
+        "source": {
+          "url": "git@gitlab.devworks.gr:toolset/wp-views.git",
+          "type": "git",
+          "reference": "a6cb8fc38c68ed1ac7a6c4dcf0536235699fe51b"
+        },
+        "dist": {
+          "url": "https://gitlab.devworks.gr/toolset/wp-views/repository/archive.zip?ref=1.2.3",
+          "type": "zip"
+        },
+        "type": "wordpress-plugin",
+        "homepage": "https://gitlab.devworks.gr/toolset/wp-views",
+        "keywords": [
+          "WordPress",
+          "Plugin"
+        ]
+      },
+      "1.3.0.1": {
+        "name": "toolset/wp-views",
+        "description": "A powerful query and render engine. In non-geek terms, let’s you display whatever content in whatever way you choose.",
+        "version": "1.3.0.1",
+        "version_normalized": "1.3.0.1",
+        "uid": 2964799351,
+        "source": {
+          "url": "git@gitlab.devworks.gr:toolset/wp-views.git",
+          "type": "git",
+          "reference": "79c7952307b8ee4d735646dd0877b95ad2953ef5"
+        },
+        "dist": {
+          "url": "https://gitlab.devworks.gr/toolset/wp-views/repository/archive.zip?ref=1.3.0.1",
+          "type": "zip"
+        },
+        "type": "wordpress-plugin",
+        "homepage": "https://gitlab.devworks.gr/toolset/wp-views",
+        "keywords": [
+          "WordPress",
+          "Plugin"
+        ]
+      },
+      "1.3.0.3": {
+        "name": "toolset/wp-views",
+        "description": "A powerful query and render engine. In non-geek terms, let’s you display whatever content in whatever way you choose.",
+        "version": "1.3.0.3",
+        "version_normalized": "1.3.0.3",
+        "uid": 3937989402,
+        "source": {
+          "url": "git@gitlab.devworks.gr:toolset/wp-views.git",
+          "type": "git",
+          "reference": "4ad2fe788193210137d2e7c142c485dbf96ecc4e"
+        },
+        "dist": {
+          "url": "https://gitlab.devworks.gr/toolset/wp-views/repository/archive.zip?ref=1.3.0.3",
+          "type": "zip"
+        },
+        "type": "wordpress-plugin",
+        "homepage": "https://gitlab.devworks.gr/toolset/wp-views",
+        "keywords": [
+          "WordPress",
+          "Plugin"
+        ]
+      },
+      "1.3.1": {
+        "name": "toolset/wp-views",
+        "description": "A powerful query and render engine. In non-geek terms, let’s you display whatever content in whatever way you choose.",
+        "version": "1.3.1",
+        "version_normalized": "1.3.1.0",
+        "uid": 3158077851,
+        "source": {
+          "url": "git@gitlab.devworks.gr:toolset/wp-views.git",
+          "type": "git",
+          "reference": "264c73c84fb8a4dae9202ad32df9f3e4b4375c6e"
+        },
+        "dist": {
+          "url": "https://gitlab.devworks.gr/toolset/wp-views/repository/archive.zip?ref=1.3.1",
+          "type": "zip"
+        },
+        "type": "wordpress-plugin",
+        "homepage": "https://gitlab.devworks.gr/toolset/wp-views",
+        "keywords": [
+          "WordPress",
+          "Plugin"
+        ]
+      },
+      "1.4.1": {
+        "name": "toolset/wp-views",
+        "description": "A powerful query and render engine. In non-geek terms, let’s you display whatever content in whatever way you choose.",
+        "version": "1.4.1",
+        "version_normalized": "1.4.1.0",
+        "uid": 4055625,
+        "source": {
+          "url": "git@gitlab.devworks.gr:toolset/wp-views.git",
+          "type": "git",
+          "reference": "036f1b8e27d62ee2eaa6d448992e7bef107f5407"
+        },
+        "dist": {
+          "url": "https://gitlab.devworks.gr/toolset/wp-views/repository/archive.zip?ref=1.4.1",
+          "type": "zip"
+        },
+        "type": "wordpress-plugin",
+        "homepage": "https://gitlab.devworks.gr/toolset/wp-views",
+        "keywords": [
+          "WordPress",
+          "Plugin"
+        ]
+      },
+      "1.5": {
+        "name": "toolset/wp-views",
+        "description": "A powerful query and render engine. In non-geek terms, let’s you display whatever content in whatever way you choose.",
+        "version": "1.5",
+        "version_normalized": "1.5.0.0",
+        "uid": 445795416,
+        "source": {
+          "url": "git@gitlab.devworks.gr:toolset/wp-views.git",
+          "type": "git",
+          "reference": "38064abd1f438dbc4b9a28d8c192ac6912519ab1"
+        },
+        "dist": {
+          "url": "https://gitlab.devworks.gr/toolset/wp-views/repository/archive.zip?ref=1.5",
+          "type": "zip"
+        },
+        "type": "wordpress-plugin",
+        "homepage": "https://gitlab.devworks.gr/toolset/wp-views",
+        "keywords": [
+          "WordPress",
+          "Plugin"
+        ]
+      },
+      "1.5.1": {
+        "name": "toolset/wp-views",
+        "description": "A powerful query and render engine. In non-geek terms, let’s you display whatever content in whatever way you choose.",
+        "version": "1.5.1",
+        "version_normalized": "1.5.1.0",
+        "uid": 2208361733,
+        "source": {
+          "url": "git@gitlab.devworks.gr:toolset/wp-views.git",
+          "type": "git",
+          "reference": "747475bb5d6311159b7f375c9a329e9cb62c18b9"
+        },
+        "dist": {
+          "url": "https://gitlab.devworks.gr/toolset/wp-views/repository/archive.zip?ref=1.5.1",
+          "type": "zip"
+        },
+        "type": "wordpress-plugin",
+        "homepage": "https://gitlab.devworks.gr/toolset/wp-views",
+        "keywords": [
+          "WordPress",
+          "Plugin"
+        ]
+      },
+      "1.6.1": {
+        "name": "toolset/wp-views",
+        "description": "A powerful query and render engine. In non-geek terms, let’s you display whatever content in whatever way you choose.",
+        "version": "1.6.1",
+        "version_normalized": "1.6.1.0",
+        "uid": 696991473,
+        "source": {
+          "url": "git@gitlab.devworks.gr:toolset/wp-views.git",
+          "type": "git",
+          "reference": "efdae5a9654ce200daaff048b4f75ff6bc24d5bb"
+        },
+        "dist": {
+          "url": "https://gitlab.devworks.gr/toolset/wp-views/repository/archive.zip?ref=1.6.1",
+          "type": "zip"
+        },
+        "type": "wordpress-plugin",
+        "homepage": "https://gitlab.devworks.gr/toolset/wp-views",
+        "keywords": [
+          "WordPress",
+          "Plugin"
+        ]
+      },
+      "1.6.2": {
+        "name": "toolset/wp-views",
+        "description": "A powerful query and render engine. In non-geek terms, let’s you display whatever content in whatever way you choose.",
+        "version": "1.6.2",
+        "version_normalized": "1.6.2.0",
+        "uid": 2067735838,
+        "source": {
+          "url": "git@gitlab.devworks.gr:toolset/wp-views.git",
+          "type": "git",
+          "reference": "4efd444b7be4221f13275611bd0ffa36f5a1760e"
+        },
+        "dist": {
+          "url": "https://gitlab.devworks.gr/toolset/wp-views/repository/archive.zip?ref=1.6.2",
+          "type": "zip"
+        },
+        "type": "wordpress-plugin",
+        "homepage": "https://gitlab.devworks.gr/toolset/wp-views",
+        "keywords": [
+          "WordPress",
+          "Plugin"
+        ]
+      },
+      "1.6.3": {
+        "name": "toolset/wp-views",
+        "description": "A powerful query and render engine. In non-geek terms, let’s you display whatever content in whatever way you choose.",
+        "version": "1.6.3",
+        "version_normalized": "1.6.3.0",
+        "uid": 3412777249,
+        "source": {
+          "url": "git@gitlab.devworks.gr:toolset/wp-views.git",
+          "type": "git",
+          "reference": "79dd75cafec3fd2603695615b69ab8b1f9f2bd70"
+        },
+        "dist": {
+          "url": "https://gitlab.devworks.gr/toolset/wp-views/repository/archive.zip?ref=1.6.3",
+          "type": "zip"
+        },
+        "type": "wordpress-plugin",
+        "homepage": "https://gitlab.devworks.gr/toolset/wp-views",
+        "keywords": [
+          "WordPress",
+          "Plugin"
+        ]
+      },
+      "1.6.4": {
+        "name": "toolset/wp-views",
+        "description": "A powerful query and render engine. In non-geek terms, let’s you display whatever content in whatever way you choose.",
+        "version": "1.6.4",
+        "version_normalized": "1.6.4.0",
+        "uid": 1249351682,
+        "source": {
+          "url": "git@gitlab.devworks.gr:toolset/wp-views.git",
+          "type": "git",
+          "reference": "3386793d487e30a75e00d7e2d4e14c69c81bc86b"
+        },
+        "dist": {
+          "url": "https://gitlab.devworks.gr/toolset/wp-views/repository/archive.zip?ref=1.6.4",
+          "type": "zip"
+        },
+        "type": "wordpress-plugin",
+        "homepage": "https://gitlab.devworks.gr/toolset/wp-views",
+        "keywords": [
+          "WordPress",
+          "Plugin"
+        ]
+      },
+      "1.7": {
+        "name": "toolset/wp-views",
+        "description": "A powerful query and render engine. In non-geek terms, let’s you display whatever content in whatever way you choose.",
+        "version": "1.7",
+        "version_normalized": "1.7.0.0",
+        "uid": 2122535733,
+        "source": {
+          "url": "git@gitlab.devworks.gr:toolset/wp-views.git",
+          "type": "git",
+          "reference": "468630290274ce0d8a33c51dd9fca30c372f86b1"
+        },
+        "dist": {
+          "url": "https://gitlab.devworks.gr/toolset/wp-views/repository/archive.zip?ref=1.7",
+          "type": "zip"
+        },
+        "type": "wordpress-plugin",
+        "homepage": "https://gitlab.devworks.gr/toolset/wp-views",
+        "keywords": [
+          "WordPress",
+          "Plugin"
+        ]
+      },
+      "dev-master": {
+        "name": "toolset/wp-views",
+        "description": "A powerful query and render engine. In non-geek terms, let’s you display whatever content in whatever way you choose.",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "uid": 2020864962,
+        "source": {
+          "url": "git@gitlab.devworks.gr:toolset/wp-views.git",
+          "type": "git",
+          "reference": "468630290274ce0d8a33c51dd9fca30c372f86b1"
+        },
+        "dist": {
+          "url": "https://gitlab.devworks.gr/toolset/wp-views/repository/archive.zip?ref=master",
+          "type": "zip"
+        },
+        "type": "wordpress-plugin",
+        "homepage": "https://gitlab.devworks.gr/toolset/wp-views",
+        "keywords": [
+          "WordPress",
+          "Plugin"
+        ]
+      }
+    }
+  }
+}
