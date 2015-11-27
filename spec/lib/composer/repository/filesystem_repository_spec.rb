@@ -1,8 +1,6 @@
 require_relative '../../../spec_helper'
 
-describe Composer::Repository::FilesystemRepository do
-
-  FilesystemRepository = Composer::Repository::FilesystemRepository
+describe FilesystemRepository do
 
   it '#read succeeds' do
     json = double(Composer::Json::JsonFile)

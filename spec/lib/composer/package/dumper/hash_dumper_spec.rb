@@ -1,16 +1,13 @@
 require_relative '../../../../spec_helper'
 
-describe Composer::Package::Dumper::HashDumper do
-
-  Link = Composer::Package::Link
-  VersionConstraint = Composer::Package::LinkConstraint::VersionConstraint
+describe HashDumper do
 
   before do
-    @dumper = Composer::Package::Dumper::HashDumper.new()
+    @dumper = HashDumper.new()
   end
 
   it '#dump succeeds with required information' do
-      package = Composer::Package::CompletePackage.new('foo', '1.0.0.0', '1.0')
+      package = CompletePackage.new('foo', '1.0.0.0', '1.0')
       expected = {
         'name' => 'foo',
         'version' => '1.0',
@@ -21,21 +18,21 @@ describe Composer::Package::Dumper::HashDumper do
   end
 
   it 'RootPackage' do
-    package = Composer::Package::RootPackage.new( 'foo', '1.0.0.0', '1.0')
+    package = RootPackage.new( 'foo', '1.0.0.0', '1.0')
     package.minimum_stability = 'dev'
     config = @dumper.dump(package)
     expect( config['minimum-stability'] ).to be == 'dev'
   end
 
   it 'DumpAbandoned' do
-    package = Composer::Package::CompletePackage.new('foo', '1.0.0.0', '1.0')
+    package = CompletePackage.new('foo', '1.0.0.0', '1.0')
     package.abandoned = true
     config = @dumper.dump(package)
     expect( config['abandoned'] ).to be_truthy
   end
 
   it 'DumpAbandonedReplacement' do
-    package = Composer::Package::CompletePackage.new('foo', '1.0.0.0', '1.0')
+    package = CompletePackage.new('foo', '1.0.0.0', '1.0')
     package.abandoned = 'foo/bar'
     config = @dumper.dump(package)
     expect( config['abandoned'] ).to be == 'foo/bar'
@@ -171,7 +168,7 @@ describe Composer::Package::Dumper::HashDumper do
       method ||= key
       expected_value ||= value
 
-      package = Composer::Package::CompletePackage.new('foo', '1.0.0.0', '1.0')
+      package = CompletePackage.new('foo', '1.0.0.0', '1.0')
       package.send("#{method}=", value)
       package.abandoned = value
 

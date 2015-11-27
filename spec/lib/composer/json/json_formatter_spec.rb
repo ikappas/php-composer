@@ -1,8 +1,6 @@
 require_relative '../../../spec_helper'
 
-describe Composer::Json::JsonFormatter do
-
-  JsonFormatter = Composer::Json::JsonFormatter
+describe JsonFormatter do
 
   it '#format succeeds on pretty printing' do
     data = '{"key":"value","array":[],"hash":{}}'

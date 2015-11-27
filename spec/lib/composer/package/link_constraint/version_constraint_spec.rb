@@ -1,8 +1,6 @@
 require_relative '../../../../spec_helper'
 
-describe Composer::Package::LinkConstraint::VersionConstraint do
-
-  VersionConstraint = Composer::Package::LinkConstraint::VersionConstraint
+describe VersionConstraint do
 
   it '#matches returns true' do
     [

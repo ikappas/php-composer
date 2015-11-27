@@ -1,9 +1,9 @@
 require_relative '../../../../spec_helper'
 
-describe Composer::Package::Loader::HashLoader do
+describe HashLoader do
 
   before do
-    @loader = Composer::Package::Loader::HashLoader.new(nil, true)
+    @loader = HashLoader.new(nil, true)
   end
 
   it '#load succeeds setting package self version' do

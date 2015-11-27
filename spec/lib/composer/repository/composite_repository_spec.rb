@@ -1,16 +1,14 @@
 require_relative '../../../spec_helper'
 
-describe Composer::Repository::CompositeRepository do
-
-  CompositeRepository = Composer::Repository::CompositeRepository
+describe CompositeRepository do
 
   context 'with packages' do
 
     it '#package? succeeds' do
-      hash_repo_1 = Composer::Repository::HashRepository.new
+      hash_repo_1 = HashRepository.new
       hash_repo_1.add_package(self.get_package('foo', '1'))
 
-      hash_repo_2 = Composer::Repository::HashRepository.new
+      hash_repo_2 = HashRepository.new
       hash_repo_2.add_package(self.get_package('bar', '1'))
 
       repo = CompositeRepository.new([ hash_repo_1, hash_repo_2 ])
@@ -29,10 +27,10 @@ describe Composer::Repository::CompositeRepository do
     end
 
     it '#find_package succeeds' do
-      hash_repo_1 = Composer::Repository::HashRepository.new
+      hash_repo_1 = HashRepository.new
       hash_repo_1.add_package(self.get_package('foo', '1'))
 
-      hash_repo_2 = Composer::Repository::HashRepository.new
+      hash_repo_2 = HashRepository.new
       hash_repo_2.add_package(self.get_package('bar', '1'))
 
       repo = CompositeRepository.new([ hash_repo_1, hash_repo_2 ])
@@ -54,12 +52,12 @@ describe Composer::Repository::CompositeRepository do
     end
 
     it '#find_packages succeeds' do
-      hash_repo_1 = Composer::Repository::HashRepository.new
+      hash_repo_1 = HashRepository.new
       hash_repo_1.add_package(self.get_package('foo', '1'))
       hash_repo_1.add_package(self.get_package('foo', '2'))
       hash_repo_1.add_package(self.get_package('bat', '1'))
 
-      hash_repo_2 = Composer::Repository::HashRepository.new
+      hash_repo_2 = HashRepository.new
       hash_repo_2.add_package(self.get_package('bar', '1'))
       hash_repo_2.add_package(self.get_package('bar', '2'))
       hash_repo_2.add_package(self.get_package('foo', '3'))
@@ -100,19 +98,19 @@ describe Composer::Repository::CompositeRepository do
     end
 
     it '#search with search name mode  succeeds' do
-      hash_repo_1 = Composer::Repository::HashRepository.new
+      hash_repo_1 = HashRepository.new
       hash_repo_1.add_package(self.get_package('foo', '1', 'Composer::Package::CompletePackage'))
       hash_repo_1.add_package(self.get_package('foo', '2', 'Composer::Package::CompletePackage'))
       hash_repo_1.add_package(self.get_package('bat', '1', 'Composer::Package::CompletePackage'))
 
-      hash_repo_2 = Composer::Repository::HashRepository.new
+      hash_repo_2 = HashRepository.new
       hash_repo_2.add_package(self.get_package('bar', '1', 'Composer::Package::CompletePackage'))
       hash_repo_2.add_package(self.get_package('bar', '2', 'Composer::Package::CompletePackage'))
       hash_repo_2.add_package(self.get_package('foo', '3', 'Composer::Package::CompletePackage'))
 
       repo = CompositeRepository.new([ hash_repo_1, hash_repo_2 ])
 
-      bat_packages = repo.search('bat', Composer::Repository::BaseRepository::SEARCH_NAME)
+      bat_packages = repo.search('bat', BaseRepository::SEARCH_NAME)
 
       # Should find one instance of 'bat_packages' (defined in just one repository)
       expect(bat_packages.length).to be == 1
@@ -120,7 +118,7 @@ describe Composer::Repository::CompositeRepository do
       # Should find packages named 'bat'"
       expect(bat_packages[0]['name']).to be == 'bat'
 
-      bar_packages = repo.search('bar', Composer::Repository::BaseRepository::SEARCH_NAME)
+      bar_packages = repo.search('bar', BaseRepository::SEARCH_NAME)
 
       # Should find two instances of 'bar' (defined in just one repository)
       expect(bar_packages.length).to be == 1
@@ -128,7 +126,7 @@ describe Composer::Repository::CompositeRepository do
       # Should find packages named 'bar'
       expect(bar_packages[0]['name']).to be == 'bar'
 
-      foo_packages = repo.search('foo', Composer::Repository::BaseRepository::SEARCH_NAME)
+      foo_packages = repo.search('foo', BaseRepository::SEARCH_NAME)
 
       # Should find 'bar'
       expect(foo_packages.length).to be == 2
@@ -140,12 +138,12 @@ describe Composer::Repository::CompositeRepository do
     end
 
     it '#search with search full text mode  succeeds' do
-      hash_repo_1 = Composer::Repository::HashRepository.new
+      hash_repo_1 = HashRepository.new
       hash_repo_1.add_package(self.get_package('foo', '1', 'Composer::Package::CompletePackage'))
       hash_repo_1.add_package(self.get_package('foo', '2', 'Composer::Package::CompletePackage'))
       hash_repo_1.add_package(self.get_package('bat', '1', 'Composer::Package::CompletePackage'))
 
-      hash_repo_2 = Composer::Repository::HashRepository.new
+      hash_repo_2 = HashRepository.new
       hash_repo_2.add_package(self.get_package('bar', '1', 'Composer::Package::CompletePackage'))
       hash_repo_2.add_package(self.get_package('bar', '2', 'Composer::Package::CompletePackage'))
       package_2 = self.get_package('foo', '3', 'Composer::Package::CompletePackage')
@@ -156,22 +154,22 @@ describe Composer::Repository::CompositeRepository do
 
       repo = CompositeRepository.new([ hash_repo_1, hash_repo_2 ])
 
-      bat_packages = repo.search('bat', Composer::Repository::BaseRepository::SEARCH_FULLTEXT)
+      bat_packages = repo.search('bat', BaseRepository::SEARCH_FULLTEXT)
 
       # Should find one instance of 'bat_packages' (defined in just one repository)
       expect(bat_packages.length).to be == 1
 
-      bar_packages = repo.search('bar', Composer::Repository::BaseRepository::SEARCH_FULLTEXT)
+      bar_packages = repo.search('bar', BaseRepository::SEARCH_FULLTEXT)
 
       # Should find two instances of 'bar' (defined in just one repository)
       expect(bar_packages.length).to be == 1
 
-      foo_packages = repo.search('foo', Composer::Repository::BaseRepository::SEARCH_FULLTEXT)
+      foo_packages = repo.search('foo', BaseRepository::SEARCH_FULLTEXT)
 
       # Should find 'bar'
       expect(foo_packages.length).to be == 2
 
-      platforms = repo.search('platform', Composer::Repository::BaseRepository::SEARCH_FULLTEXT)
+      platforms = repo.search('platform', BaseRepository::SEARCH_FULLTEXT)
 
       # Should find 'platform'
       expect(platforms.length).to be == 1
@@ -179,10 +177,10 @@ describe Composer::Repository::CompositeRepository do
     end
 
     it '#packages succeeds' do
-      hash_repo_1 = Composer::Repository::HashRepository.new
+      hash_repo_1 = HashRepository.new
       hash_repo_1.add_package(self.get_package('foo', '1'))
 
-      hash_repo_2 = Composer::Repository::HashRepository.new
+      hash_repo_2 = HashRepository.new
       hash_repo_2.add_package(self.get_package('bar', '1'))
 
       repo = CompositeRepository.new([ hash_repo_1, hash_repo_2 ])
@@ -205,10 +203,10 @@ describe Composer::Repository::CompositeRepository do
     end
 
     it '#count succeeds' do
-      hash_repo_1 = Composer::Repository::HashRepository.new
+      hash_repo_1 = HashRepository.new
       hash_repo_1.add_package(self.get_package('foo', '1'))
 
-      hash_repo_2 = Composer::Repository::HashRepository.new
+      hash_repo_2 = HashRepository.new
       hash_repo_2.add_package(self.get_package('bar', '1'))
 
       repo = CompositeRepository.new([ hash_repo_1, hash_repo_2 ])
@@ -216,10 +214,10 @@ describe Composer::Repository::CompositeRepository do
     end
 
     it '#remove_package succeeds' do
-      hash_repo_1 = Composer::Repository::HashRepository.new
+      hash_repo_1 = HashRepository.new
       hash_repo_1.add_package(self.get_package('foo', '1'))
 
-      hash_repo_2 = Composer::Repository::HashRepository.new
+      hash_repo_2 = HashRepository.new
       hash_repo_2.add_package(self.get_package('bar', '1'))
       hash_repo_2.add_package(self.get_package('bar', '2'))
       hash_repo_2.add_package(self.get_package('bar', '3'))
@@ -232,10 +230,10 @@ describe Composer::Repository::CompositeRepository do
     end
 
     it '#add_repository succeeds' do
-      hash_repo_1 = Composer::Repository::HashRepository.new
+      hash_repo_1 = HashRepository.new
       hash_repo_1.add_package(self.get_package('foo', '1'))
 
-      hash_repo_2 = Composer::Repository::HashRepository.new
+      hash_repo_2 = HashRepository.new
       hash_repo_2.add_package(self.get_package('bar', '1'))
       hash_repo_2.add_package(self.get_package('bar', '2'))
       hash_repo_2.add_package(self.get_package('bar', '3'))

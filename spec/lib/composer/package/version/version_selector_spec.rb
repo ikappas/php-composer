@@ -1,9 +1,6 @@
 require_relative '../../../../spec_helper'
 
-describe Composer::Package::Version::VersionSelector do
-
-  VersionParser = Composer::Package::Version::VersionParser
-  VersionSelector = Composer::Package::Version::VersionSelector
+describe VersionSelector do
 
   it '#find_recommended_require_version succeds' do
     [

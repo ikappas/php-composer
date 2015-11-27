@@ -1,8 +1,6 @@
 require_relative '../../../spec_helper'
 
-describe Composer::Repository::HashRepository do
-
-  HashRepository = Composer::Repository::HashRepository
+describe HashRepository do
 
   it '#add_package succeeds' do
     repo = HashRepository.new

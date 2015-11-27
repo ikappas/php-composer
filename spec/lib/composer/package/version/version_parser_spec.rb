@@ -1,14 +1,6 @@
 require_relative '../../../../spec_helper'
 
-describe Composer::Package::Version::VersionParser do
-
-  # before do
-    VersionParser = Composer::Package::Version::VersionParser
-    EmptyConstraint = Composer::Package::LinkConstraint::EmptyConstraint
-    SpecificConstraint = Composer::Package::LinkConstraint::SpecificConstraint
-    VersionConstraint = Composer::Package::LinkConstraint::VersionConstraint
-    MultiConstraint = Composer::Package::LinkConstraint::MultiConstraint
-  # end
+describe VersionParser do
 
   it 'format version for dev package' do
     [

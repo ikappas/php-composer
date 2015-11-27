@@ -1,9 +1,6 @@
 require_relative '../../../../spec_helper'
 
-describe Composer::Package::LinkConstraint::MultiConstraint do
-
-  VersionConstraint = Composer::Package::LinkConstraint::VersionConstraint
-  MultiConstraint = Composer::Package::LinkConstraint::MultiConstraint
+describe MultiConstraint do
 
   it '#matches succeeds matching multi version' do
     version_require_start = VersionConstraint.new('>', '1.0')

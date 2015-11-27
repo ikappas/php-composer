@@ -4,7 +4,7 @@ module PackageHelpers
   extend self
 
   def instance_base_package(setup)
-    package = double(Composer::Package::BasePackage)
+    package = double(BasePackage)
     package = base_package_methods(package, setup)
     package
   end
@@ -25,7 +25,7 @@ module PackageHelpers
   end
 
   def instance_root_package(setup)
-    package = double(Composer::Package::RootPackage)
+    package = double(RootPackage)
     package = base_package_methods(package, setup)
     package = package_methods(package, setup)
     package = complete_package_methods(package, setup)

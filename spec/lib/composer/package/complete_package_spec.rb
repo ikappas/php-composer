@@ -1,6 +1,6 @@
 require_relative '../../../spec_helper'
 
-describe Composer::Package::CompletePackage do
+describe CompletePackage do
 
   before do
     @providers = [
@@ -13,7 +13,7 @@ describe Composer::Package::CompletePackage do
   end
 
   it 'should have expected naming semantics' do
-    version_parser = Composer::Package::Version::VersionParser.new
+    version_parser = VersionParser.new
     @providers.each do |provider|
       name = provider[:name]
       version = provider[:version]
@@ -36,7 +36,7 @@ describe Composer::Package::CompletePackage do
   end
 
   it 'should have expected marshalling semantics' do
-    version_parser = Composer::Package::Version::VersionParser.new
+    version_parser = VersionParser.new
     @providers.each do |provider|
       name = provider[:name]
       version = provider[:version]

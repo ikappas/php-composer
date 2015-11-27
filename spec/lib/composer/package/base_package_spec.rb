@@ -1,10 +1,10 @@
 require_relative '../../../spec_helper'
 
-describe Composer::Package::BasePackage do
+describe BasePackage do
 
   it 'should set same repository' do
-    package = Composer::Package::BasePackage.new('foo')
-    repository = Composer::Repository::HashRepository.new()
+    package = BasePackage.new('foo')
+    repository = HashRepository.new()
     package.repository = repository
 
     begin
@@ -16,11 +16,11 @@ describe Composer::Package::BasePackage do
   end
 
   it 'should not set other repository' do
-    package = Composer::Package::BasePackage.new('foo')
-    repository = Composer::Repository::HashRepository.new()
+    package = BasePackage.new('foo')
+    repository = HashRepository.new()
     package.repository = repository
 
-    expect { package.repository = Composer::Repository::HashRepository.new() }.to raise_error(Composer::LogicError)
+    expect { package.repository = HashRepository.new() }.to raise_error(Composer::LogicError)
   end
 
 end
