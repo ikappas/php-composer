@@ -204,14 +204,14 @@ module Composer
               if e.message === 'only generation of JSON objects or arrays allowed'
                 #trick into parsing scalar values by wrapping them in an array
                 scalar = data.gsub("\\\\", "\\\\\\")
-                if json = JSON::generate([scalar])
+                if json = JSON::generate([scalar], { quirks_mode: false })
                   json = json[1..(json.length - 2)]
                 end
               end
             end
           end
 
-          return json unless options
+          return json unless options != 0
 
           result = Composer::Json::JsonFormatter::format(
             json,
@@ -234,9 +234,10 @@ module Composer
 
           begin
             data = JSON.parse(json)
-          rescue Exception => e
+          rescue => e
             last_error = e
           end
+
 
           if data.nil? && last_error != JSON_ERROR_NONE
             JsonFile::validate_syntax(json, file)
