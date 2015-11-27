@@ -65,7 +65,7 @@ module Composer
             raise UnexpectedValueError,
                   'Could not parse package list from the repository'
           end
-        rescue Exception => e
+        rescue => e
           raise InvalidRepositoryError,
                 "Invalid repository data in #{@file.path}, \
                 packages could not be loaded: \
