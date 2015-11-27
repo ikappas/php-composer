@@ -20,7 +20,7 @@ module Composer
     # Ioannis Kappas <ikappas@devworks.gr>
     class CompositeRepository < Composer::Repository::BaseRepository
       # Initializes filesystem repository.
-      # @param [Array] An array of reporitories
+      # @param [Array] repositories An array of repositories.
       def initialize(repositories)
         unless repositories
           raise ArgumentError,
