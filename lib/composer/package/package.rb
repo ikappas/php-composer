@@ -9,8 +9,6 @@
 # file that was distributed with this source code.
 #
 
-require 'digest/crc32'
-
 module Composer
   module Package
 
