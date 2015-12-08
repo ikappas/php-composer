@@ -18,7 +18,7 @@ module Composer
     #
     # Ruby Authors:
     # Ioannis Kappas <ikappas@devworks.gr>
-    class JsonValidationError < StandardError
+    class JsonValidationError < ::Composer::Error
       attr_reader :errors
 
       def initialize(errors)
