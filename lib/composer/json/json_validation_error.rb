@@ -1,6 +1,8 @@
 #
 # This file was ported to ruby from Composer php source code file.
+#
 # Original Source: Composer\Json\JsonValidationException.php
+# Ref SHA: 16578d1d01656ce7b694abd5517af44395cc53b3
 #
 # (c) Nils Adermann <naderman@naderman.de>
 #     Jordi Boggiano <j.boggiano@seld.be>
@@ -11,6 +13,7 @@
 
 module Composer
   module Json
+
     # Represents a Json Validation error
     #
     # PHP Authors:
@@ -25,5 +28,6 @@ module Composer
         @errors = errors
       end
     end
+
   end
 end
