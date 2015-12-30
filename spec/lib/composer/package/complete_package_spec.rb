@@ -1,6 +1,6 @@
 require_relative '../../../spec_helper'
 
-describe CompletePackage do
+describe ::Composer::Package::CompletePackage do
 
   before do
     @providers = [
@@ -12,43 +12,42 @@ describe CompletePackage do
     ]
   end
 
+  let(:version_parser) { ::Composer::Semver::VersionParser.new }
+
   it 'should have expected naming semantics' do
-    version_parser = VersionParser.new
     @providers.each do |provider|
       name = provider[:name]
       version = provider[:version]
       norm_version = version_parser.normalize(version)
-      package = Composer::Package::Package.new(name, norm_version, version)
+      package = described_class.new(name, norm_version, version)
       expect(package.name).to be == name.downcase
     end
   end
 
   it 'should have expected versioning semantics' do
-    version_parser = Composer::Package::Version::VersionParser.new
     @providers.each do |provider|
       name = provider[:name]
       version = provider[:version]
       norm_version = version_parser.normalize(version)
-      package = Composer::Package::Package.new(name, norm_version, version)
+      package = described_class.new(name, norm_version, version)
       expect(package.pretty_version).to be == version
       expect(package.version).to be == norm_version
     end
   end
 
   it 'should have expected marshalling semantics' do
-    version_parser = VersionParser.new
     @providers.each do |provider|
       name = provider[:name]
       version = provider[:version]
       norm_version = version_parser.normalize(version)
-      package = Composer::Package::Package.new(name, norm_version, version)
+      package = described_class.new(name, norm_version, version)
       expect(package.pretty_version).to be == version
       expect("#{package}").to be == "#{name.downcase}-#{norm_version}"
     end
   end
 
   it 'should have expected target dir' do
-      package = Composer::Package::Package.new('a', '1.0.0.0', '1.0')
+      package = described_class.new('a', '1.0.0.0', '1.0')
 
       expect(package.target_dir).to be_nil
 
