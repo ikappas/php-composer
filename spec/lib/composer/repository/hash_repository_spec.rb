@@ -1,39 +1,57 @@
 require_relative '../../../spec_helper'
 
-describe HashRepository do
+describe ::Composer::Repository::HashRepository do
+
+  context '#initialize' do
+
+    it 'succeeds on empty array' do
+      repo = build( :hash_repository, packages: [])
+      expect(repo.count).to be == 0
+    end
+
+    it 'succeeds on array of packages' do
+      repo = build( :hash_repository, packages: [
+          build( :package, name: 'foo', version: '1')
+      ])
+      expect(repo.count).to be == 1
+    end
+
+  end
 
   it '#add_package succeeds' do
-    repo = HashRepository.new
-    repo.add_package(self.get_package('foo', '1'))
+    repo = build( :hash_repository, :empty )
+    repo.add_package( build( :package, name: 'foo', version: '1'))
     expect(repo.count).to be == 1
   end
 
   it '#remove_package succeeds' do
-    package = self.get_package('bar', '2')
-    repo = HashRepository.new
-    repo.add_package(self.get_package('foo', '1'))
+    package =  build( :package, name: 'bar', version: '2')
+    repo = build( :hash_repository, :empty )
+    repo.add_package( build( :package, name: 'foo', version: '1'))
     repo.add_package(package)
 
     expect(repo.count).to be == 2
-    repo.remove_package(self.get_package('foo', '1'))
+    repo.remove_package( build( :package, name: 'foo', version: '1'))
     expect(repo.count).to be == 1
     expect(repo.packages).to be == [ package ]
   end
 
   it '#package? succeeds' do
-    repo = HashRepository.new
-    repo.add_package(self.get_package('foo', '1'))
-    repo.add_package(self.get_package('bar', '2'))
+    repo = build( :hash_repository, packages: [
+      build( :package, name: 'foo', version: '1'),
+      build( :package, name: 'bar', version: '2')
+    ])
 
-    expect(repo.package?(self.get_package('foo', '1'))).to be true
-    expect(repo.package?(self.get_package('bar', '1'))).to be false
+    expect(repo.package?( build( :package, name: 'foo', version: '1'))).to be true
+    expect(repo.package?( build( :package, name: 'bar', version: '1'))).to be false
   end
 
   it '#find_packages succeeds' do
-    repo = HashRepository.new
-    repo.add_package(self.get_package('foo', '1'))
-    repo.add_package(self.get_package('bar', '2'))
-    repo.add_package(self.get_package('bar', '3'))
+    repo = build( :hash_repository, packages: [
+      build( :package, name: 'foo', version: '1'),
+      build( :package, name: 'bar', version: '2'),
+      build( :package, name: 'bar', version: '3'),
+    ])
 
     foo = repo.find_packages('foo')
     expect(foo.length).to be == 1
@@ -44,17 +62,28 @@ describe HashRepository do
     expect(bar[0].name).to be == 'bar'
   end
 
-  it '#automatically adds aliased package' do
-    repo = HashRepository.new
-    package = self.get_package('foo', '1')
-    alias_package = self.get_alias_package(package, '2')
+  it '#search succeeds' do
+    repo = build( :hash_repository, packages: [
+      build( :complete_package, name: 'foo', version: '1' ),
+      build( :complete_package, name: 'bar', version: '2' ),
+      build( :complete_package, name: 'bar', version: '3' )
+    ])
+
+    foo = repo.search('foo')
+    expect(foo.length).to be == 1
+    expect(foo[0]['name']).to be == 'foo'
+  end
+
+  it 'automatically adds aliased package' do
+    repo = build( :hash_repository, :empty)
+    package =  build( :package, name: 'foo', version: '1')
+    alias_package = build( :alias_package, alias_of: package, version: '2' )
 
     repo.add_package(alias_package)
 
     expect(repo.count).to be == 2
-
-    expect(repo.package?(self.get_package('foo', '1'))).to be true
-    expect(repo.package?(self.get_package('foo', '2'))).to be true
+    expect(repo.package?( build( :package, name: 'foo', version: '1'))).to be true
+    expect(repo.package?( build( :package, name: 'foo', version: '2'))).to be true
   end
 
 end
