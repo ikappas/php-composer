@@ -1,6 +1,8 @@
 #
 # This file was ported to ruby from Composer php source code file.
+#
 # Original Source: Composer\Json\JsonFile.php
+# Ref SHA: ce085826711a6354024203c6530ee0b56fea9c13
 #
 # (c) Nils Adermann <naderman@naderman.de>
 #     Jordi Boggiano <j.boggiano@seld.be>
@@ -9,8 +11,11 @@
 # file that was distributed with this source code.
 #
 
+require 'json-schema'
+
 module Composer
   module Json
+
     # Reads/writes json files.
     #
     # PHP Authors:
@@ -20,38 +25,38 @@ module Composer
     # Ruby Authors:
     # Ioannis Kappas <ikappas@devworks.gr>
     class JsonFile
+
       attr_reader :path
+      attr :rfs, :json_last_error
+
+      private :rfs, :json_last_error
 
       LAX_SCHEMA = 1
       STRICT_SCHEMA = 2
 
-      JSON_ERROR_NONE = 0
-      JSON_ERROR_DEPTH = 1
-      JSON_ERROR_STATE_MISMATCH = 2
-      JSON_ERROR_CTRL_CHAR = 3
-      JSON_ERROR_SYNTAX = 4
-      JSON_ERROR_UTF8 = 5
-      JSON_ERROR_RECURSION = 6
-      JSON_ERROR_INF_OR_NAN = 7
-      JSON_ERROR_UNSUPPORTED_TYPE = 8
+      JSON_UNESCAPED_SLASHES = 64
+      JSON_PRETTY_PRINT = 128
+      JSON_UNESCAPED_UNICODE = 256
 
       # Initializes json file reader/parser.
+      #
       # @param [String] path path to a json file
       # @param [RemoteFileSystem] rfs The remote filesystem to use for http/https json files
       # @raise [ArgumentError]
       def initialize(path, rfs = nil)
         @path = path
-        if rfs === nil && /^https?:\/\//i.match(path)
+        if rfs.nil? && /^https?:\/\//i.match(path)
           raise ArgumentError,
                 'http urls require a RemoteFilesystem instance to be passed'
         end
         @rfs = rfs
+        @json_last_error = nil
       end
 
       # Checks whether this json file exists.
       #
       # Returns:
-      # true if this json file exists; otherwise false.
+      #   true if this json file exists; otherwise false.
       def exists?
         File.exists?(@path)
       end
@@ -59,45 +64,61 @@ module Composer
       # Reads the json file.
       #
       # Raises:
-      # RuntimeError
+      #   RuntimeError on error.
       #
       # Returns:
-      # mixed
+      #   mixed
       def read
-        if @rfs
-          json = @rfs.get_contents(@path, @path, false)
-        else
-          json = File.open(@path, 'r') { |f| f.read }
+
+        begin
+
+          if @rfs
+            json = @rfs.get_contents(@path, @path, false)
+          else
+            json = File.open(@path, 'r') { |f| f.read }
+          end
+
+        # rescue TransportError => e
+        #   raise RuntimeError, e.message
+
+        rescue => e
+          raise RuntimeError,
+                "Could not read #{@path}\n\n #{e.message}"
         end
 
-        JsonFile::parse_json(json, @path)
-
-      rescue Exception => e
-        raise e
+        ::Composer::Json::JsonFile::parse_json(json, @path)
       end
 
+      # Writes the json file.
+      #
+      # @param hash The hash to write to the json file.
+      # @param options The options to use
       def write(hash, options = 448)
-        dir = File.dirname(@path)
 
+        dir = File.dirname(@path)
         unless File.directory?(dir)
           if File.exists?(dir)
-            raise UnexpectedValueError,
+            raise ::Composer::UnexpectedValueError,
                   "#{dir} exists and is not a directory."
           end
-          FileUtils.mkdir_p(dir, mode: 0777)
+          unless FileUtils.mkdir_p(dir, mode: 0777) == 0
+            raise ::Composer::UnexpectedValueError,
+                  "#{dir} does not exist and could not be created."
+          end
         end
 
         retries = 3
         while retries >= 0
           begin
-            file_ending = options & JsonFormatter::JSON_PRETTY_PRINT ? "\n" : ''
+
+            file_ending = ((options & JSON_PRETTY_PRINT).equal? JSON_PRETTY_PRINT) ? "\n" : ''
             File.open(@path, 'w') do |f|
-              content = JsonFile::encode(hash, options) + file_ending
+              content = self.class.encode(hash, options) + file_ending
               f.write(content)
             end
             break
 
-          rescue Exception => e
+          rescue => e
             raise e unless retries > 0
             retries -= 1
             sleep 0.5
@@ -113,10 +134,11 @@ module Composer
       # @return bool true if schema is valid; Otherwise false.
       # @throw Composer::Json::JsonValidationError
       def validate_schema(schema = STRICT_SCHEMA)
+
         content = File.open(@path, 'r') { |f| f.read }
         data = JSON.parse(content)
 
-        if data == nil && content != 'null'
+        if data.nil? && content != 'null'
           self::validate_syntax(content, @path)
         end
 
@@ -131,14 +153,15 @@ module Composer
 
         if schema === LAX_SCHEMA
           schema_data['additionalProperties'] = true
-          schema_data['properties']['name']['required'] = false
-          schema_data['properties']['description']['required'] = false
+          schema_data['required'] = [] # TODO: Check this!
+          # schema_data['properties']['name']['required'] = false
+          # schema_data['properties']['description']['required'] = false
         end
 
         errors = JSON::Validator.fully_validate(
           schema_data,
           data,
-          {:errors_as_objects => true}
+          { errors_as_objects: true }
         )
 
         unless errors.empty?
@@ -147,8 +170,8 @@ module Composer
             prefix = error[:fragment] ? "#{error[:fragment]} : " : ''
             processed_errors.push( prefix + error[:message])
           end
-          raise Composer::Json::JsonValidationError.new(processed_errors),
-                "\"#{@path}\" does not match the expected JSON schema"
+          raise ::Composer::Json::JsonValidationError.new(processed_errors),
+                %Q("#{@path}" does not match the expected JSON schema)
         end
 
         true
@@ -163,62 +186,51 @@ module Composer
         # @return string Encoded json
         def encode(data, options = 448)
 
-          # if (version_compare(PHP_VERSION, '5.4', '>=')) {
-          #     $json = json_encode(data, options);
+          # WARNING: This function deviates from the original!
 
-          #     # compact brackets to follow recent php versions
-          #     if (PHP_VERSION_ID < 50428 || (PHP_VERSION_ID >= 50500 && PHP_VERSION_ID < 50512) || (defined('JSON_C_VERSION') && version_compare(phpversion('json'), '1.3.6', '<'))) {
-          #         $json = preg_replace('/\[\s+\]/', '[]', $json);
-          #         $json = preg_replace('/\{\s+\}/', '{}', $json);
-          #     }
-
-          #     return $json;
-          # }
-
-          # * *indent*: a string used to indent levels (default: ''),
-          # * *space*: a string that is put after, a : or , delimiter (default: ''),
-          # * *space_before*: a string that is put before a : pair delimiter (default: ''),
-          # * *object_nl*: a string that is put at the end of a JSON object (default: ''),
-          # * *array_nl*: a string that is put at the end of a JSON array (default: ''),
-          # * *allow_nan*: true if NaN, Infinity, and -Infinity should be
-          #   generated, otherwise an exception is thrown if these values are
-          #   encountered. This options defaults to false.
-          # * *max_nesting*: The maximum depth of nesting allowed in the data
-          #   structures from which JSON is to be generated. Disable depth checking
-          #   with :max_nesting => false, it defaults to 100.
+          json_last_error = nil
 
           if data.nil?
             return 'null'
-          elsif data.is_a?(TrueClass)
+          elsif data.is_a? TrueClass
             return 'true'
-          elsif data.is_a?(FalseClass)
+          elsif data.is_a? FalseClass
             return 'false'
-          elsif data.is_a?(Integer)
+          elsif data.is_a? Integer
             return Integer(data)
-          elsif data.is_a?(Float)
+          elsif data.is_a? Float
             return Float(data)
           else
             begin
-              json = JSON.generate(data, { quirks_mode: false })
+              json = JSON.generate data, quirks_mode: false
             rescue JSON::GeneratorError => e
+              json_last_error = e
               if e.message === 'only generation of JSON objects or arrays allowed'
-                #trick into parsing scalar values by wrapping them in an array
-                scalar = data.gsub("\\\\", "\\\\\\")
-                if json = JSON::generate([scalar], { quirks_mode: false })
-                  json = json[1..(json.length - 2)]
+                begin
+                  #trick into parsing scalar values by wrapping them in an array
+                  scalar = data.gsub("\\\\", "\\\\\\")
+                  json = JSON::generate [scalar], quirks_mode: false
+                  unless json.nil?
+                    json = json[1..(json.length - 2)]
+                    json_last_error = nil
+                  end
+                rescue
+                  # don't do anything (will report original error)
                 end
               end
             end
           end
 
-          return json unless options != 0
+          unless json_last_error.nil?
+            raise RuntimeError, json_last_error.message
+          end
 
-          result = Composer::Json::JsonFormatter::format(
-            json,
-            options
-          )
+          pretty_print = ( options & JSON_PRETTY_PRINT ).equal? JSON_PRETTY_PRINT
+          unescape_unicode = ( options & JSON_UNESCAPED_UNICODE ).equal? JSON_UNESCAPED_UNICODE
+          unescape_slashes = ( options & JSON_UNESCAPED_SLASHES ).equal? JSON_UNESCAPED_SLASHES
 
-          result
+          return json unless pretty_print or unescape_unicode or unescape_slashes
+          ::Composer::Json::JsonFormatter::format(json, unescape_unicode, unescape_slashes)
         end
 
         # Parses json string and returns hash.
@@ -230,27 +242,31 @@ module Composer
         # Returns:
         # mixed
         def parse_json(json, file = nil)
-          last_error = JSON_ERROR_NONE
 
+          # WARNING: This function deviates from the original!
+
+          return if json.nil?
+
+          @json_last_error = nil
           begin
-            data = JSON.parse(json)
-          rescue => e
-            last_error = e
+            data = JSON.parse json
+          rescue JSON::ParserError => e
+            @json_last_error = e
           end
 
-
-          if data.nil? && last_error != JSON_ERROR_NONE
-            JsonFile::validate_syntax(json, file)
-            raise JSON::ParserError,
-                "\"#{file}\" does not contain valid JSON\n
-                #{last_error.message}"
+          if data.nil? && !@json_last_error.nil?
+            validate_syntax(json, file)
+          else
+            data
           end
 
-          data
         end
 
-        def validate_syntax(json, file)
-          # JSON::
+        def validate_syntax(_json, file = nil)
+
+          # WARNING: This function deviates from the original!
+
+          # TODO:
           # parser = Composer::Json::JsonParser.new
           # if (result = parser.lint(json))
           #   raise ParsingError,
@@ -260,6 +276,17 @@ module Composer
           # if (defined('JSON_ERROR_UTF8') && JSON_ERROR_UTF8 === json_last_error()) {
           #     throw new \UnexpectedValueException('"'.$file.'" is not UTF-8, could not parse as JSON');
           # }
+
+          unless @json_last_error.nil?
+            if file.nil?
+              error_msg = %Q("#{file}" does not contain valid JSON\n#{@json_last_error.message})
+            else
+              error_msg = %Q("JSON string does not contain valid JSON\n#{@json_last_error.message})
+            end
+
+            raise JSON::ParserError, error_msg
+          end
+
           true
         end
       end
