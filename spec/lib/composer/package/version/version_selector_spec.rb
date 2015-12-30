@@ -1,8 +1,12 @@
 require_relative '../../../../spec_helper'
 
-describe VersionSelector do
+describe ::Composer::Package::Version::VersionSelector do
 
-  it '#find_recommended_require_version succeds' do
+  let(:pool) { nil }
+  let(:selector) { described_class.new(pool)}
+  let(:parser) { ::Composer::Semver::VersionParser.new }
+
+  context '#find_recommended_require_version' do
     [
       # real version, is dev package, stability, expected recommendation, [branch-alias]
       { pretty_version: '1.2.1',        is_dev: false, stability: 'stable', expected_version: '~1.2' },
@@ -31,43 +35,43 @@ describe VersionSelector do
       # // numeric alias
       { pretty_version: '3.x-dev',      is_dev: true,  stability: 'dev',    expected_version: '~3.0@dev', branch_alias: '3.0.x-dev' },
       { pretty_version: '3.x-dev',      is_dev: true,  stability: 'dev',    expected_version: '~3.0@dev', branch_alias: '3.0-dev' }
-    ].each do |setup|
-      pool = nil
-      selector = VersionSelector.new(pool)
-      parser = VersionParser.new
+    ].each do |test|
 
-      package = double('Composer::Package::Package')
-      allow(package).to receive(:pretty_name).and_return( 'Pretty Name' )
-      allow(package).to receive(:pretty_version).and_return( setup[:pretty_version] )
-      allow(package).to receive(:version).and_return( parser.normalize(setup[:pretty_version]) )
-      allow(package).to receive(:is_dev).and_return( setup[:is_dev] )
-      allow(package).to receive(:stability).and_return( setup[:stability] )
-      allow(package).to receive(:target_dir).and_return( nil )
-      allow(package).to receive(:source_type).and_return( nil )
-      allow(package).to receive(:dist_type).and_return( nil )
-      allow(package).to receive(:archive_excludes).and_return( nil )
-      allow(package).to receive(:requires).and_return( nil )
-      allow(package).to receive(:conflicts).and_return( nil )
-      allow(package).to receive(:provides).and_return( nil )
-      allow(package).to receive(:replaces).and_return( nil )
-      allow(package).to receive(:dev_requires).and_return( nil )
-      allow(package).to receive(:suggests).and_return( nil )
-      allow(package).to receive(:requires).and_return( nil )
-      allow(package).to receive(:release_date).and_return( nil )
-      allow(package).to receive(:binaries).and_return( nil )
-      allow(package).to receive(:type).and_return( nil )
-      allow(package).to receive(:installation_source).and_return( nil )
-      allow(package).to receive(:autoload).and_return( nil )
-      allow(package).to receive(:dev_autoload).and_return( nil )
-      allow(package).to receive(:notification_url).and_return( nil )
-      allow(package).to receive(:include_paths).and_return( nil )
-      allow(package).to receive(:transport_options).and_return( nil )
+      branch_alias_desc = test[:branch_alias] ? " with branch alias #{test[:branch_alias]}" : ''
 
-      branch_alias = !setup.key?(:branch_alias) ? [] : { 'branch-alias' => { setup[:pretty_version] => setup[:branch_alias] }}
-      allow(package).to receive(:extra).and_return( branch_alias )
+      it "succeeds on '#{test[:pretty_version]}'#{ branch_alias_desc }" do
+        package = double('Composer::Package::Package')
+        allow(package).to receive(:pretty_name).and_return( 'Pretty Name' )
+        allow(package).to receive(:pretty_version).and_return( test[:pretty_version] )
+        allow(package).to receive(:version).and_return( parser.normalize(test[:pretty_version]) )
+        allow(package).to receive(:is_dev).and_return( test[:is_dev] )
+        allow(package).to receive(:stability).and_return( test[:stability] )
+        allow(package).to receive(:target_dir).and_return( nil )
+        allow(package).to receive(:source_type).and_return( nil )
+        allow(package).to receive(:dist_type).and_return( nil )
+        allow(package).to receive(:archive_excludes).and_return( nil )
+        allow(package).to receive(:requires).and_return( nil )
+        allow(package).to receive(:conflicts).and_return( nil )
+        allow(package).to receive(:provides).and_return( nil )
+        allow(package).to receive(:replaces).and_return( nil )
+        allow(package).to receive(:dev_requires).and_return( nil )
+        allow(package).to receive(:suggests).and_return( nil )
+        allow(package).to receive(:requires).and_return( nil )
+        allow(package).to receive(:release_date).and_return( nil )
+        allow(package).to receive(:binaries).and_return( nil )
+        allow(package).to receive(:type).and_return( nil )
+        allow(package).to receive(:installation_source).and_return( nil )
+        allow(package).to receive(:autoload).and_return( nil )
+        allow(package).to receive(:dev_autoload).and_return( nil )
+        allow(package).to receive(:notification_url).and_return( nil )
+        allow(package).to receive(:include_paths).and_return( nil )
+        allow(package).to receive(:transport_options).and_return( nil )
 
-      expect( selector.find_recommended_require_version(package) ).to be == setup[:expected_version]
+        branch_alias = !test.key?(:branch_alias) ? [] : { 'branch-alias' => { test[:pretty_version] => test[:branch_alias] }}
+        allow(package).to receive(:extra).and_return( branch_alias )
 
+        expect( selector.find_recommended_require_version(package) ).to be == test[:expected_version]
+      end
     end
   end
 end
