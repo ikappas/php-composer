@@ -1,6 +1,6 @@
-require 'spec_helper'
+require_relative '../../../spec_helper'
 
-describe ::Composer::Package::BasePackage do
+describe ::Composer::Package::Package do
 
   context '#repository' do
 
@@ -10,7 +10,7 @@ describe ::Composer::Package::BasePackage do
 
     let(:package) do
       @package ||= begin
-        pkg = described_class.new('foo')
+        pkg = described_class.new('foo', '1.0.0.0', '1.0')
         pkg.repository = repository
         pkg
       end
@@ -18,7 +18,7 @@ describe ::Composer::Package::BasePackage do
 
     it 'sets same repository' do
       same_repository = repository
-      expect { package.repository = same_repository }.not_to raise_error(::Composer::LogicError)
+      expect { package.repository = same_repository }.not_to raise_error
     end
 
     it 'does not set other repository' do
@@ -31,7 +31,7 @@ describe ::Composer::Package::BasePackage do
   context '#full_pretty_version' do
 
     let(:package) do
-      @package ||= described_class.new('foo')
+      @package ||= described_class.new('foo', '1.0.0.0', '1.0')
     end
 
     [
