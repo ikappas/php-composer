@@ -1,247 +1,315 @@
 require_relative '../../../spec_helper'
 
-describe CompositeRepository do
+describe ::Composer::Repository::CompositeRepository do
 
   context 'with packages' do
 
-    it '#package? succeeds' do
-      hash_repo_1 = HashRepository.new
-      hash_repo_1.add_package(self.get_package('foo', '1'))
+    context '#package?' do
 
-      hash_repo_2 = HashRepository.new
-      hash_repo_2.add_package(self.get_package('bar', '1'))
+      let(:repository) do
+        @repository ||= begin
+          repo_1 = build( :hash_repository, packages: [
+              build( :package, name: 'foo', version: '1' )
+          ])
+          repo_2 = build( :hash_repository, packages: [
+              build( :package, name: 'bar', version: '1' )
+          ])
+          described_class.new([ repo_1, repo_2 ])
+        end
+      end
 
-      repo = CompositeRepository.new([ hash_repo_1, hash_repo_2 ])
+      it "returns true on package 'foo/1'" do
+        expect(repository.package?(build(:package, name: 'foo', version: '1'))).to be_truthy
+      end
 
-      # Should have package 'foo/1'
-      expect(repo.package?(self.get_package('foo', '1'))).to be true
+      it "returns true on package 'bar/1'" do
+        expect(repository.package?(build(:package, name: 'bar', version: '1'))).to be_truthy
+      end
 
-      # Should have package 'bar/1'
-      expect(repo.package?(self.get_package('bar', '1'))).to be true
+      it "returns false on package 'foo/2'" do
+        expect(repository.package?(build(:package, name: 'foo', version: '2'))).to be_falsey
+      end
 
-      # Should not have package 'foo/2'
-      expect(repo.package?(self.get_package('foo', '2'))).to be false
-
-      # Should not have package 'bar/2'
-      expect(repo.package?(self.get_package('bar', '2'))).to be false
-    end
-
-    it '#find_package succeeds' do
-      hash_repo_1 = HashRepository.new
-      hash_repo_1.add_package(self.get_package('foo', '1'))
-
-      hash_repo_2 = HashRepository.new
-      hash_repo_2.add_package(self.get_package('bar', '1'))
-
-      repo = CompositeRepository.new([ hash_repo_1, hash_repo_2 ])
-
-      # Should find package 'foo/1' and get name of 'foo'
-      expect(repo.find_package('foo', '1').name).to be == 'foo'
-
-      # Should find package 'foo/1' and get pretty version of '1'
-      expect(repo.find_package('foo', '1').pretty_version).to be == '1'
-
-      # Should find package 'bar/1' and get name of 'bar'
-      expect(repo.find_package('bar', '1').name).to be == 'bar'
-
-      # Should find package 'bar/1' and get pretty version of '1'
-      expect(repo.find_package('bar', '1').pretty_version).to be == '1'
-
-      # Should not find package 'foo/2'
-      expect(repo.find_package('foo', '2')).to be_nil
-    end
-
-    it '#find_packages succeeds' do
-      hash_repo_1 = HashRepository.new
-      hash_repo_1.add_package(self.get_package('foo', '1'))
-      hash_repo_1.add_package(self.get_package('foo', '2'))
-      hash_repo_1.add_package(self.get_package('bat', '1'))
-
-      hash_repo_2 = HashRepository.new
-      hash_repo_2.add_package(self.get_package('bar', '1'))
-      hash_repo_2.add_package(self.get_package('bar', '2'))
-      hash_repo_2.add_package(self.get_package('foo', '3'))
-
-      repo = CompositeRepository.new([ hash_repo_1, hash_repo_2 ])
-
-      bat_packages = repo.find_packages('bat')
-
-      # Should find one instance of 'bat_packages' (defined in just one repository)
-      expect(bat_packages.length).to be == 1
-
-      # "Should find packages named 'bat'"
-      expect(bat_packages[0].name).to be == 'bat'
-
-      bar_packages = repo.find_packages('bar')
-
-      # Should find two instances of 'bar' (both defined in the same repository)
-      expect(bar_packages.length).to be == 2
-
-      # Should find packages named 'bar'
-      expect(bar_packages[0].name).to be == 'bar'
-      expect(bar_packages[0].pretty_version).to be == '1'
-      expect(bar_packages[1].name).to be == 'bar'
-      expect(bar_packages[1].pretty_version).to be == '2'
-
-      foo_packages = repo.find_packages('foo')
-
-      # Should find three instances of 'foo' (two defined in one repository, the third in the other)
-      expect(foo_packages.length).to be == 3
-
-      # Should find packages named 'foo'
-      expect(foo_packages[0].name).to be == 'foo'
-      expect(foo_packages[0].pretty_version).to be == '1'
-      expect(foo_packages[1].name).to be == 'foo'
-      expect(foo_packages[1].pretty_version).to be == '2'
-      expect(foo_packages[2].name).to be == 'foo'
-      expect(foo_packages[2].pretty_version).to be == '3'
-    end
-
-    it '#search with search name mode  succeeds' do
-      hash_repo_1 = HashRepository.new
-      hash_repo_1.add_package(self.get_package('foo', '1', 'Composer::Package::CompletePackage'))
-      hash_repo_1.add_package(self.get_package('foo', '2', 'Composer::Package::CompletePackage'))
-      hash_repo_1.add_package(self.get_package('bat', '1', 'Composer::Package::CompletePackage'))
-
-      hash_repo_2 = HashRepository.new
-      hash_repo_2.add_package(self.get_package('bar', '1', 'Composer::Package::CompletePackage'))
-      hash_repo_2.add_package(self.get_package('bar', '2', 'Composer::Package::CompletePackage'))
-      hash_repo_2.add_package(self.get_package('foo', '3', 'Composer::Package::CompletePackage'))
-
-      repo = CompositeRepository.new([ hash_repo_1, hash_repo_2 ])
-
-      bat_packages = repo.search('bat', BaseRepository::SEARCH_NAME)
-
-      # Should find one instance of 'bat_packages' (defined in just one repository)
-      expect(bat_packages.length).to be == 1
-
-      # Should find packages named 'bat'"
-      expect(bat_packages[0]['name']).to be == 'bat'
-
-      bar_packages = repo.search('bar', BaseRepository::SEARCH_NAME)
-
-      # Should find two instances of 'bar' (defined in just one repository)
-      expect(bar_packages.length).to be == 1
-
-      # Should find packages named 'bar'
-      expect(bar_packages[0]['name']).to be == 'bar'
-
-      foo_packages = repo.search('foo', BaseRepository::SEARCH_NAME)
-
-      # Should find 'bar'
-      expect(foo_packages.length).to be == 2
-
-      # Should find packages named 'bar'
-      expect(foo_packages[0]['name']).to be == 'foo'
-      expect(foo_packages[1]['name']).to be == 'foo'
+      it "returns false on package 'foo/2'" do
+        expect(repository.package?(build(:package, name: 'bar', version: '2'))).to be_falsey
+      end
 
     end
 
-    it '#search with search full text mode  succeeds' do
-      hash_repo_1 = HashRepository.new
-      hash_repo_1.add_package(self.get_package('foo', '1', 'Composer::Package::CompletePackage'))
-      hash_repo_1.add_package(self.get_package('foo', '2', 'Composer::Package::CompletePackage'))
-      hash_repo_1.add_package(self.get_package('bat', '1', 'Composer::Package::CompletePackage'))
+    context '#find_package' do
 
-      hash_repo_2 = HashRepository.new
-      hash_repo_2.add_package(self.get_package('bar', '1', 'Composer::Package::CompletePackage'))
-      hash_repo_2.add_package(self.get_package('bar', '2', 'Composer::Package::CompletePackage'))
-      package_2 = self.get_package('foo', '3', 'Composer::Package::CompletePackage')
-      allow(package_2).to receive(:description).and_return( 'sample desc' )
-      allow(package_2).to receive(:keywords).and_return(%w{platform forms})
-      hash_repo_2.add_package(package_2)
+      let(:repository) do
+        @repository ||= begin
+          repo_1 = build( :hash_repository, packages: [
+              build( :package, name: 'foo', version: '1' )
+          ])
+          repo_2 = build( :hash_repository, packages: [
+              build( :package, name: 'bar', version: '1' )
+          ])
+          described_class.new([ repo_1, repo_2 ])
+        end
+      end
 
+      it "finds package 'foo/1' and get name of 'foo'" do
+        expect(repository.find_package('foo', '1').name).to be == 'foo'
+      end
 
-      repo = CompositeRepository.new([ hash_repo_1, hash_repo_2 ])
+      it "finds package 'foo/1' and get pretty version of '1'" do
+        expect(repository.find_package('foo', '1').pretty_version).to be == '1'
+      end
 
-      bat_packages = repo.search('bat', BaseRepository::SEARCH_FULLTEXT)
+      it "finds package 'bar/1' and get name of 'bar'" do
+        expect(repository.find_package('bar', '1').name).to be == 'bar'
+      end
 
-      # Should find one instance of 'bat_packages' (defined in just one repository)
-      expect(bat_packages.length).to be == 1
+      it "finds package 'bar/1' and get pretty version of '1'" do
+        expect(repository.find_package('bar', '1').pretty_version).to be == '1'
+      end
 
-      bar_packages = repo.search('bar', BaseRepository::SEARCH_FULLTEXT)
-
-      # Should find two instances of 'bar' (defined in just one repository)
-      expect(bar_packages.length).to be == 1
-
-      foo_packages = repo.search('foo', BaseRepository::SEARCH_FULLTEXT)
-
-      # Should find 'bar'
-      expect(foo_packages.length).to be == 2
-
-      platforms = repo.search('platform', BaseRepository::SEARCH_FULLTEXT)
-
-      # Should find 'platform'
-      expect(platforms.length).to be == 1
+      it "fails on finding package 'foo/2' and return nil" do
+        expect(repository.find_package('foo', '2')).to be_nil
+      end
 
     end
 
-    it '#packages succeeds' do
-      hash_repo_1 = HashRepository.new
-      hash_repo_1.add_package(self.get_package('foo', '1'))
+    context '#find_packages' do
 
-      hash_repo_2 = HashRepository.new
-      hash_repo_2.add_package(self.get_package('bar', '1'))
+      let(:repository) do
+        @repository ||= begin
+          repo_1 = build( :hash_repository, packages: [
+            build( :package, name: 'foo', version: '1' ),
+            build( :package, name: 'foo', version: '2' ),
+            build( :package, name: 'bat', version: '1' )
+          ])
+          repo_2 = build( :hash_repository, packages: [
+              build( :package, name: 'bar', version: '1' ),
+              build( :package, name: 'bar', version: '2' ),
+              build( :package, name: 'foo', version: '3' )
+          ])
+          described_class.new([ repo_1, repo_2 ])
+        end
+      end
 
-      repo = CompositeRepository.new([ hash_repo_1, hash_repo_2 ])
-      packages = repo.packages
+      let(:bat_packages) { @bat_packages ||= repository.find_packages('bat') }
+      let(:bar_packages) { @bar_packages ||= repository.find_packages('bar') }
+      let(:foo_packages) { @foo_packages ||= repository.find_packages('foo') }
 
-      # Should get two packages
-      expect(packages.length).to be == 2
+      it "finds one instance of 'bat_packages' (defined in just one repository)" do
+        expect(bat_packages.length).to be == 1
+      end
 
-      # First package should have name of 'foo'
-      expect(packages[0].name).to be == 'foo'
+      it "finds packages named 'bat'" do
+        expect(bat_packages[0].name).to be == 'bat'
+      end
 
-      # First package should have pretty version of '1'
-      expect(packages[0].pretty_version).to be == '1'
+      it "finds two instances of 'bar' (both defined in the same repository)" do
+        expect(bar_packages.length).to be == 2
+      end
 
-      # Second package should have name of 'bar'
-      expect(packages[1].name).to be == 'bar'
+      it "finds packages named 'bar'" do
+        expect(bar_packages[0].name).to be == 'bar'
+        expect(bar_packages[0].pretty_version).to be == '1'
+        expect(bar_packages[1].name).to be == 'bar'
+        expect(bar_packages[1].pretty_version).to be == '2'
+      end
 
-      # Second package should have pretty version of '1'
-      expect(packages[1].pretty_version).to be == '1'
+      it "finds three instances of 'foo' (two defined in one repository, the third in the other)" do
+        expect(foo_packages.length).to be == 3
+      end
+
+      it "finds packages named 'foo'" do
+        expect(foo_packages[0].name).to be == 'foo'
+        expect(foo_packages[0].pretty_version).to be == '1'
+        expect(foo_packages[1].name).to be == 'foo'
+        expect(foo_packages[1].pretty_version).to be == '2'
+        expect(foo_packages[2].name).to be == 'foo'
+        expect(foo_packages[2].pretty_version).to be == '3'
+      end
+
+    end
+
+    context '#search' do
+
+      context 'with search name mode' do
+
+        let(:repository) do
+          @repository ||= begin
+            repo_1 = build( :hash_repository, packages: [
+                build( :complete_package, name: 'foo', version: '1' ),
+                build( :complete_package, name: 'foo', version: '2' ),
+                build( :complete_package, name: 'bat', version: '1' )
+            ])
+            repo_2 = build( :hash_repository, packages: [
+                build( :complete_package, name: 'bar', version: '1' ),
+                build( :complete_package, name: 'bar', version: '2' ),
+                build( :complete_package, name: 'foo', version: '3' )
+            ])
+            described_class.new([ repo_1, repo_2 ])
+          end
+        end
+
+        let(:bat_packages) { @bat_packages ||= repository.search('bat', ::Composer::Repository::BaseRepository::SEARCH_NAME) }
+        let(:bar_packages) { @bar_packages ||= repository.search('bar', ::Composer::Repository::BaseRepository::SEARCH_NAME) }
+        let(:foo_packages) { @foo_packages ||= repository.search('foo', ::Composer::Repository::BaseRepository::SEARCH_NAME) }
+
+        it "finds one instance of 'bat_packages' (defined in just one repository)" do
+          expect(bat_packages.length).to be == 1
+        end
+
+        it "finds packages named 'bat'" do
+          expect(bat_packages[0]['name']).to be == 'bat'
+        end
+
+        it "finds two instances of 'bar' (defined in just one repository)" do
+          expect(bar_packages.length).to be == 1
+        end
+
+        it "finds packages named 'bar'" do
+          expect(bar_packages[0]['name']).to be == 'bar'
+        end
+
+        it "finds 'bar'" do
+          expect(foo_packages.length).to be == 2
+        end
+
+        it "finds packages named 'bar'" do
+          expect(foo_packages[0]['name']).to be == 'foo'
+          expect(foo_packages[1]['name']).to be == 'foo'
+        end
+
+      end
+
+      context 'with search full text mode' do
+
+        let(:repository) do
+          @repository ||= begin
+            repo_1 = build( :hash_repository, packages: [
+                build( :complete_package, name: 'foo', version: '1' ),
+                build( :complete_package, name: 'foo', version: '2' ),
+                build( :complete_package, name: 'bat', version: '1' )
+            ])
+            repo_2 = build( :hash_repository, packages: [
+                build( :complete_package, name: 'bar', version: '1' ),
+                build( :complete_package, name: 'bar', version: '2' ),
+            ])
+
+            package = build( :complete_package, name: 'foo', version: '3' )
+            allow(package).to receive(:description).and_return( 'sample desc' )
+            allow(package).to receive(:keywords).and_return(%w{platform forms})
+            repo_2.add_package(package)
+
+            described_class.new([ repo_1, repo_2 ])
+          end
+        end
+
+        let(:bat_packages) { @bat_packages ||= repository.search('bat', ::Composer::Repository::BaseRepository::SEARCH_FULLTEXT) }
+        let(:bar_packages) { @bar_packages ||= repository.search('bar', ::Composer::Repository::BaseRepository::SEARCH_FULLTEXT) }
+        let(:foo_packages) { @foo_packages ||= repository.search('foo', ::Composer::Repository::BaseRepository::SEARCH_FULLTEXT) }
+        let(:platforms) { @platforms ||= repository.search('platform', ::Composer::Repository::BaseRepository::SEARCH_FULLTEXT) }
+
+        it "finds one instance of 'bat_packages' (defined in just one repository)" do
+          expect(bat_packages.length).to be == 1
+        end
+
+        it "finds two instances of 'bar' (defined in just one repository)" do
+          expect(bar_packages.length).to be == 1
+        end
+
+        it "finds 'bar'" do
+          expect(foo_packages.length).to be == 2
+        end
+
+        it "finds 'platform'" do
+          expect(platforms.length).to be == 1
+        end
+
+      end
+    end
+
+    context '#packages' do
+
+      let(:repository) do
+        @repository ||= begin
+          repo_1 = build( :hash_repository, packages: [
+              build( :package, name: 'foo', version: '1' )
+          ])
+          repo_2 = build( :hash_repository, packages: [
+              build( :package, name: 'bar', version: '1' )
+          ])
+          described_class.new([ repo_1, repo_2 ])
+        end
+      end
+
+      it 'contains two packages' do
+        expect(repository.packages.length).to be == 2
+      end
+
+      it "first package name is 'foo'" do
+        expect(repository.packages[0].name).to be == 'foo'
+      end
+
+      it "first package pretty version is '1'" do
+        expect(repository.packages[0].pretty_version).to be == '1'
+      end
+
+      it "second package name is 'bar'" do
+        expect(repository.packages[1].name).to be == 'bar'
+      end
+
+      it "second package pretty version is '1'" do
+        expect(repository.packages[1].pretty_version).to be == '1'
+      end
+
     end
 
     it '#count succeeds' do
-      hash_repo_1 = HashRepository.new
-      hash_repo_1.add_package(self.get_package('foo', '1'))
 
-      hash_repo_2 = HashRepository.new
-      hash_repo_2.add_package(self.get_package('bar', '1'))
+      repo_1 = build( :hash_repository, packages: [
+          build( :package, name: 'foo', version: '1' )
+      ])
+      repo_2 = build( :hash_repository, packages: [
+          build( :package, name: 'bar', version: '1' )
+      ])
 
-      repo = CompositeRepository.new([ hash_repo_1, hash_repo_2 ])
-      expect(repo.count).to be == 2
+      repository = described_class.new([ repo_1, repo_2 ])
+      expect(repository.count).to be == 2
+
     end
 
     it '#remove_package succeeds' do
-      hash_repo_1 = HashRepository.new
-      hash_repo_1.add_package(self.get_package('foo', '1'))
 
-      hash_repo_2 = HashRepository.new
-      hash_repo_2.add_package(self.get_package('bar', '1'))
-      hash_repo_2.add_package(self.get_package('bar', '2'))
-      hash_repo_2.add_package(self.get_package('bar', '3'))
+      repo_1 = build( :hash_repository, packages: [
+          build( :package, name: 'foo', version: '1' )
+      ])
 
-      repo = CompositeRepository.new([ hash_repo_1, hash_repo_2 ])
+      repo_2 = build( :hash_repository, packages: [
+        build( :package, name: 'bar', version: '1' ),
+        build( :package, name: 'bar', version: '2' ),
+        build( :package, name: 'bar', version: '3' )
+      ])
 
-      expect(repo.count).to be == 4
-      repo.remove_package(self.get_package('bar', '3'))
-      expect(repo.count).to be == 3
+      repository = described_class.new([ repo_1, repo_2 ])
+      expect(repository.count).to be == 4
+      repository.remove_package(build( :package, name: 'bar', version: '3' ))
+      expect(repository.count).to be == 3
     end
 
     it '#add_repository succeeds' do
-      hash_repo_1 = HashRepository.new
-      hash_repo_1.add_package(self.get_package('foo', '1'))
 
-      hash_repo_2 = HashRepository.new
-      hash_repo_2.add_package(self.get_package('bar', '1'))
-      hash_repo_2.add_package(self.get_package('bar', '2'))
-      hash_repo_2.add_package(self.get_package('bar', '3'))
+      repo_1 = build( :hash_repository, packages: [
+          build( :package, name: 'foo', version: '1' )
+      ])
 
-      repo = CompositeRepository.new([ hash_repo_1 ])
-      expect(repo.count).to be == 1
-      repo.add_repository(hash_repo_2)
-      expect(repo.count).to be == 4
+      repo_2 = build( :hash_repository, packages: [
+          build( :package, name: 'bar', version: '1' ),
+          build( :package, name: 'bar', version: '2' ),
+          build( :package, name: 'bar', version: '3' )
+      ])
+
+      repository = described_class.new([ repo_1 ])
+      expect(repository.count).to be == 1
+      repository.add_repository(repo_2)
+      expect(repository.count).to be == 4
     end
 
   end
@@ -249,12 +317,13 @@ describe CompositeRepository do
   context 'with no packages' do
 
     it '#initialize succeeds' do
-      repo = CompositeRepository.new([])
-      expect(repo.find_packages('foo')).to be == []
-      expect(repo.search('foo')).to be == []
-      expect(repo.packages).to be == []
-      expect(repo.repositories).to be == []
+      repository = described_class.new([])
+      expect(repository.find_packages('foo')).to be == []
+      expect(repository.search('foo')).to be == []
+      expect(repository.packages).to be == []
+      expect(repository.repositories).to be == []
     end
 
   end
+
 end
