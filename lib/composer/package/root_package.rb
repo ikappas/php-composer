@@ -12,17 +12,25 @@
 module Composer
   module Package
 
+    ##
     # The root package represents the project's composer.json
     # and contains additional metadata
-    class RootPackage < Composer::Package::CompletePackage
+    ##
+    class RootPackage < ::Composer::Package::CompletePackage
 
       attr_accessor :minimum_stability, :prefer_stable, :stability_flags,
                     :references, :aliases
 
+      ##
       # Creates a new root package in memory package.
-      # Param: string name          The package's name
-      # Param: string version       The package's version
-      # Param: string prettyVersion The package's non-normalized version
+      #
+      # @param name string name
+      #   The package's name
+      # @param version string version
+      #   The package's version
+      # @param: pretty_version string
+      #   The package's non-normalized version
+      ##
       def initialize(name, version, pretty_version)
         super(name, version, pretty_version)
 

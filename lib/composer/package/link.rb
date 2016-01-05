@@ -18,11 +18,12 @@ module Composer
       attr_reader :source, :target, :constraint
 
       # Creates a new package link.
-      # @param string                  source
-      # @param string                  target
-      # @param LinkConstraintInterface constraint       Constraint applying to the target of this link
-      # @param string                  description      Used to create a descriptive string representation
-      # @param string                  prettyConstraint
+      #
+      # @param source string
+      # @param target string
+      # @param constraint LinkConstraintInterface Constraint applying to the target of this link
+      # @param description string Used to create a descriptive string representation
+      # @param pretty_constraint string
       def initialize(source, target, constraint = nil, description = 'relates to', pretty_constraint = nil)
         @source = source.downcase
         @target = target.downcase
@@ -31,6 +32,9 @@ module Composer
         @pretty_constraint = pretty_constraint
       end
 
+      # Get the link's pretty constraint.
+      #
+      # @return string
       def pretty_constraint
         unless @pretty_constraint
           raise UnexpectedValueError, "Link #{self} has been misconfigured and had no pretty constraint given."
@@ -38,10 +42,16 @@ module Composer
         @pretty_constraint
       end
 
+      # Get the link's pretty string.
+      #
+      # @return string
       def pretty_string(source_package)
         "#{source_package.pretty_string} #{@description} #{@target} #{@constraint.pretty_string}"
       end
 
+      # Get the link's string representation.
+      #
+      # @return string
       def to_s
         "#{@source} #{@description} #{@target} (#{@constraint})"
       end
