@@ -9,6 +9,8 @@
 # file that was distributed with this source code.
 #
 
+require 'composer/semver'
+
 module Composer
   module Package
 
@@ -16,84 +18,54 @@ module Composer
     # and contains additional metadata
     # @php_author Jordi Boggiano <j.boggiano@seld.be>
     # @author Ioannis Kappas <ikappas@devworks.gr>
-    class AliasPackage < Composer::Package::BasePackage
+    class AliasPackage < ::Composer::Package::CompletePackage
 
       attr_reader :alias_of, :requires, :conflicts, :provides, :replaces
                   :dev_requires
 
-      attr_accessor :repositories, :license, :keywords, :authors,
-                    :description, :homepage, :scripts, :support,
-                    :source_url, :source_reference, :source_mirrors
+      # attr_accessor :repositories, :license, :keywords, :authors,
+      #               :description, :homepage, :scripts, :support,
+      #               :source_url, :source_reference, :source_mirrors
 
-      # All descendants' constructors should call this parent constructor
-      # @param alias_of Package The package this package is an alias of
-      # @param version String The version the alias must report
-      # @param pretty_version String The alias's non-normalized version
+      # All descendants' constructors should call this parent constructor.
+      #
+      # Params:
+      # +alias_of+:: the package this package is an alias of
+      # +version+:: the version the alias must report
+      # +pretty_version+:: the alias's non-normalized version
       def initialize(alias_of, version, pretty_version)
-        super(alias_of.name)
+
+        unless alias_of.kind_of?(::Composer::Package::Package)
+          raise ::Composer::ArgumentError,
+                'Invalid alias_of argument supplied.'
+        end
+
+        super(alias_of.name, version, pretty_version)
 
         @version = version
         @pretty_version = pretty_version
         @alias_of = alias_of
-        @stability = Composer::Package::Version::VersionParser::parse_stability(version)
+        @stability = ::Composer::Semver::VersionParser::parse_stability(version)
         @dev = @stability === 'dev'
 
         # replace self.version dependencies
-        %w{requires dev_requires}.each do |type|
-
-          links = alias_of.send(type)
-          links.each do |index, link|
-            # link is self.version, but must be replacing also the replaced version
-            if 'self.version' === link.pretty_constraint
-              links[index] = Composer::Package::Link.new(
-                link.source,
-                link.target,
-                Composer::Package::LinkConstraint::VersionConstraint.new(
-                  '=',
-                  @version
-                ),
-                type,
-                pretty_version
-              )
-            end
-          end
-          @type = links
+        %w{requires dev_requires conflicts provides replaces}.each do |type|
+          links = alias_of.send type
+          @type = replace_self_version_dependencies links, type
         end
-
-        # duplicate self.version provides
-        %w{conflicts provides replaces}.each do |type|
-          links = alias_of.send(type)
-          new_links = []
-          links.each do |link|
-            # link is self.version, but must be replacing also the replaced version
-            if 'self.version' === link.pretty_constraint
-              new_links = Composer.Package.Link.new(
-                link.source,
-                link.target,
-                Composer::Package::LinkConstraint.VersionConstraint.new(
-                  '=',
-                  @version
-                ),
-                type,
-                pretty_version
-              )
-            end
-          end
-          @type = links.zip(new_links).flatten.compact
-          # @type = (links << new_links)
-        end
-
       end
 
       # Determine if development package
       # Return: true if development package; Otherwise false.
-      def is_dev
+      def is_dev?
         @dev
       end
 
       # Stores whether this is an alias created by an aliasing in the requirements of the root package or not
       # Use by the policy for sorting manually aliased packages first, see #576
-      # @param bool $value
+      #
+      # Params:
+      # +value+:: bool $value
       # @return mixed
       def root_package_alias=(value)
         @root_package_alias = value
@@ -110,7 +82,7 @@ module Composer
       #######################################
 
       def type
-        @alias_of.Type
+        @alias_of.type
       end
 
       def target_dir
@@ -154,7 +126,7 @@ module Composer
       end
 
       def source_mirrors
-        @alias_of.SourceMirrors
+        @alias_of.source_mirrors
       end
 
       def dist_type
@@ -261,12 +233,57 @@ module Composer
         @alias_of.archive_excludes
       end
 
-      def is_abandoned?
-        @alias_of.is_abandoned?
+      def abandoned?
+        @alias_of.abandoned?
       end
 
       def replacement_package
         @alias_of.replacement_package
+      end
+
+      protected
+
+      ##
+      # Replace self version dependencies helper
+      #
+      # @param links array
+      #   An array of links
+      # @param link_type
+      #   The specified links type
+      #
+      # @return array
+      ##
+      def replace_self_version_dependencies(links, link_type)
+        if %w{conflicts provides replaces}.include? link_type
+           new_links = []
+           links.each do |link|
+             # link is self.version, but must be replacing also the replaced version
+             if 'self.version' === link.pretty_constraint
+               new_links = ::Composer.Package.Link.new(
+                 link.source,
+                 link.target,
+                 ::Composer::Semver::Constraint::Constraint.new('=', @version),
+                 type,
+                 pretty_version
+               )
+             end
+           end
+           links = links.zip(new_links).flatten.compact
+        else
+          links.each do |index, link|
+            # link is self.version, but must be replacing also the replaced version
+            if 'self.version' === link.pretty_constraint
+              links[index] = ::Composer::Package::Link.new(
+                link.source,
+                link.target,
+                ::Composer::Semver::Constraint::Constraint.new('=', @version),
+                type,
+                pretty_version
+              )
+            end
+          end
+        end
+        links
       end
     end
   end
