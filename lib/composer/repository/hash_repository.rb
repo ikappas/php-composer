@@ -9,22 +9,24 @@
 # file that was distributed with this source code.
 #
 
+require 'composer/semver'
+
 module Composer
   module Repository
-    class HashRepository < Composer::Repository::BaseRepository
+    class HashRepository < ::Composer::Repository::BaseRepository
+
       def initialize(packages = [])
-        packages.each do |package|
-          add_package(package)
-        end
+        packages.each {|p| add_package p } if packages.instance_of? Array
       end
 
       def find_package(name, version = nil)
+
         # normalize name
-        name = name.downcase
+        name.downcase! unless name.nil?
 
         # normalize version
-        if !version.nil?
-          version_parser = Composer::Package::Version::VersionParser.new
+        unless version.nil?
+          version_parser = ::Composer::Semver::VersionParser.new
           version = version_parser.normalize(version)
         end
 
@@ -41,47 +43,58 @@ module Composer
       end
 
       def find_packages(name, version = nil)
+
           # normalize name
-          name = name.downcase
+          name.downcase! unless name.nil?
 
           # normalize version
-          if version != nil
-            version_parser = Composer::Package::Version::VersionParser.new
+          unless version.nil?
+            version_parser = ::Composer::Semver::VersionParser.new
             version = version_parser.normalize(version)
           end
 
           matches = []
           packages.each do |package|
-            if package.name === name && (nil === version || version === package.version)
-              matches.push(package)
+            if package.name === name && (version.nil? || version === package.version)
+              matches.push package
             end
           end
           matches
       end
 
+      ##
+      # Searches the repository for packages containing the query
+      #
+      # @param query string
+      #   The search query
+      # @param mode int
+      #   A set of SEARCH_* constants to search on, implementations should do a best effort only
+      #
+      # @return array[] an array of array('name' => '...', 'description' => '...')
+      ##
       def search(query, mode = 0)
+
         regex = /(?:#{query.split(/\s+/).join('|')})/i
+
         matches = {}
         packages.each do |package|
+
           name = package.name
 
-          # already matched
+          # skip if already matched
           next if matches[name]
 
           # search
-          unless regex.match(name)
-            unless mode === Composer::Repository::BaseRepository::SEARCH_FULLTEXT &&
-                package.instance_of?(Composer::Package::CompletePackage) &&
-                regex.match("#{package.keywords ? package.keywords.join(' ') : ''} #{package.description ? package.description : ''}")
-              next
-            end
+          if regex.match(name) ||
+              mode === ::Composer::Repository::BaseRepository::SEARCH_FULLTEXT &&
+              package.kind_of?(::Composer::Package::CompletePackage) &&
+              regex.match("#{package.keywords ? package.keywords.join(' ') : ''} #{package.description ? package.description : ''}")
+
+            matches[name] = {
+                'name' => package.pretty_name,
+                'description' => package.send('description'),
+            }
           end
-
-          matches[name] = {
-            'name' => package.pretty_name,
-            'description' => package.description,
-          }
-
         end
         matches.values
       end
@@ -91,7 +104,7 @@ module Composer
           raise ArgumentError,
                 'package must be specified'
         end
-        unless package.is_a?(Composer::Package::BasePackage)
+        unless package.is_a?(::Composer::Package::Package)
           raise TypeError,
                 'package must be a class or superclass of \
                 Composer::Package::Package'
@@ -105,16 +118,18 @@ module Composer
         false
       end
 
+      ##
       # Adds a new package to the repository
       #
-      # Params:
-      # +package+ Package The package to add
+      # @param package Composer::Package::Package
+      #   The package to add
+      ##
       def add_package(package)
         unless package
           raise ArgumentError,
                 'package must be specified'
         end
-        unless package.is_a?(Composer::Package::BasePackage)
+        unless package.is_a?(::Composer::Package::Package)
           raise TypeError,
                 'package must be a class or superclass of \
                 Composer::Package::Package'
@@ -126,7 +141,7 @@ module Composer
 
         @packages << package
 
-        if package.instance_of?(Composer::Package::AliasPackage)
+        if package.instance_of?(::Composer::Package::AliasPackage)
           aliased_package = package.alias_of
           if aliased_package.repository === nil
             add_package(aliased_package)
@@ -134,16 +149,18 @@ module Composer
         end
       end
 
+      ##
       # Removes package from repository.
       #
-      # Params:
-      # +package+ package instance to remove
+      # @param package Composer::Package::Package
+      #   The package instance to remove
+      ##
       def remove_package(package)
         unless package
           raise ArgumentError,
                 'package must be specified'
         end
-        unless package.is_a?(Composer::Package::BasePackage)
+        unless package.is_a?(::Composer::Package::Package)
           raise TypeError,
                 'package must be a class or superclass of \
                 Composer::Package::Package'
@@ -167,24 +184,26 @@ module Composer
       end
 
       def count
-        @packages.length
+        packages.length
       end
 
       protected
 
+      ##
       # Initializes the packages array.
       # Mostly meant as an extension point.
+      ##
       def initialize_repository
         @packages = []
       end
 
       def create_alias_package(package, version, pretty_version)
-        if package.instance_of?(Composer::Package::AliasPackage)
+        if package.instance_of?(::Composer::Package::AliasPackage)
           alias_of = package.alias_of
         else
           alias_of = package
         end
-        Composer::Package::AliasPackage.new(
+        ::Composer::Package::AliasPackage.new(
           alias_of,
           version,
           pretty_version
