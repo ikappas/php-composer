@@ -46,12 +46,12 @@ module Composer
         def process_git_url(mirror_url, package_name, url, type)
 
           case url
-            when /^(?:(?:https?|git):\/\/github\.com\/|git@github\.com:)([^\/]+)\/(.+?)(?:\.git)?$/
-              url = "gh-#{$1}/#{$2}"
-            when /^https:\/\/bitbucket\.org\/([^\/]+)\/(.+?)(?:\.git)?\/?$/
-              url = "bb-#{$1}/#{$2}"
-            else
-              url = url.gsub(/^\//, '').gsub(/\/$/, '').gsub(/[^a-z0-9_.-]/i, '-')
+          when /^(?:(?:https?|git):\/\/github\.com\/|git@github\.com:)([^\/]+)\/(.+?)(?:\.git)?$/
+            url = "gh-#{$1}/#{$2}"
+          when /^https:\/\/bitbucket\.org\/([^\/]+)\/(.+?)(?:\.git)?\/?$/
+            url = "bb-#{$1}/#{$2}"
+          else
+            url = url.gsub(/^\//, '').gsub(/\/$/, '').gsub(/[^a-z0-9_.-]/i, '-')
           end
 
           map = {

@@ -80,7 +80,7 @@ module Composer
                   if dumper[:options][:to]
                     attr_key = dumper[:options][:to]
                   else
-                    attr_key = dumper[:attr].to_s.gsub('_', '-')
+                    attr_key = dumper[:attr].to_s.tr('_', '-')
                   end
                   data[attr_key] = attr_value
                 end

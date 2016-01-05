@@ -25,7 +25,7 @@ describe ::Composer::Repository::HashRepository do
   end
 
   it '#remove_package succeeds' do
-    package =  build( :package, name: 'bar', version: '2')
+    package = build( :package, name: 'bar', version: '2')
     repo = build( :hash_repository, :empty )
     repo.add_package( build( :package, name: 'foo', version: '1'))
     repo.add_package(package)
@@ -76,7 +76,7 @@ describe ::Composer::Repository::HashRepository do
 
   it 'automatically adds aliased package' do
     repo = build( :hash_repository, :empty)
-    package =  build( :package, name: 'foo', version: '1')
+    package = build( :package, name: 'foo', version: '1')
     alias_package = build( :alias_package, alias_of: package, version: '2' )
 
     repo.add_package(alias_package)

@@ -100,7 +100,7 @@ module Composer
                 if loader[:options][:from]
                   config_key = loader[:options][:from]
                 else
-                  config_key = loader[:attr].to_s.gsub('_', '-')
+                  config_key = loader[:attr].to_s.tr('_', '-')
                 end
 
                 if config.key? config_key

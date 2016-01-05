@@ -166,7 +166,11 @@ describe ::Composer::Package::Dumper::HashDumper do
     ].each do |test|
       it "succeeds on dumping '#{test[:key]}'" do
 
-        key, value, method, expected = test[:key], test[:value], test[:method], test[:expected]
+        key = test[:key]
+        value = test[:value]
+        method = test[:method]
+        expected = test[:expected]
+
         method ||= key
         expected ||= value
 

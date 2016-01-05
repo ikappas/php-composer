@@ -31,7 +31,7 @@ module Composer
           if json.kind_of? ::Composer::Json::JsonFile
             config = json.read
           elsif File.exists?(json)
-            content =  File.open(json, 'r') { |f| f.read }
+            content = File.open(json, 'r') { |f| f.read }
             config = ::Composer::Json::JsonFile.parse_json content, json
           elsif json.is_a? String
             config = ::Composer::Json::JsonFile.parse_json json

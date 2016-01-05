@@ -12,10 +12,10 @@ describe ::Composer::Util::ComposerMirror do
 
     it 'succeeds on reference be5d2593866abbf7316460ecebb1ad3b421d351d' do
 
-        reference = 'be5d2593866abbf7316460ecebb1ad3b421d351d'
-        mirror_url = 'http://mirror.com/%package%/%version%/%reference%/%type%/'
-        expected = "http://mirror.com/#{package_name}/#{version}/#{reference}/#{type}/"
-        expect( util.process_url(mirror_url, package_name, version, reference, type)).to be == expected
+      reference = 'be5d2593866abbf7316460ecebb1ad3b421d351d'
+      mirror_url = 'http://mirror.com/%package%/%version%/%reference%/%type%/'
+      expected = "http://mirror.com/#{package_name}/#{version}/#{reference}/#{type}/"
+      expect( util.process_url(mirror_url, package_name, version, reference, type)).to be == expected
 
     end
 

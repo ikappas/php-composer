@@ -88,7 +88,7 @@ module Composer
               pos -= 1
               prev_char = json[i - 1]
 
-              if prev_char != '{' &&  prev_char != '['
+              if prev_char != '{' && prev_char != '['
                 # If this character is the end of an element,
                 # output a new line and indent the next line
                 result << new_line

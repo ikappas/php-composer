@@ -2,8 +2,8 @@ require_relative '../../../spec_helper'
 
 describe ::Composer::Package::CompletePackage do
 
-  before do
-    @providers = [
+  let(:providers) do
+    @providers ||= [
       { name: 'foo',            version: '1-beta' },
       { name: 'node',           version: '0.5.6' },
       { name: 'li3',            version: '0.10' },
@@ -14,8 +14,8 @@ describe ::Composer::Package::CompletePackage do
 
   let(:version_parser) { ::Composer::Semver::VersionParser.new }
 
-  it 'should have expected naming semantics' do
-    @providers.each do |provider|
+  it 'has expected naming semantics' do
+    providers.each do |provider|
       name = provider[:name]
       version = provider[:version]
       norm_version = version_parser.normalize(version)
@@ -24,8 +24,8 @@ describe ::Composer::Package::CompletePackage do
     end
   end
 
-  it 'should have expected versioning semantics' do
-    @providers.each do |provider|
+  it 'has expected versioning semantics' do
+    providers.each do |provider|
       name = provider[:name]
       version = provider[:version]
       norm_version = version_parser.normalize(version)
@@ -35,8 +35,8 @@ describe ::Composer::Package::CompletePackage do
     end
   end
 
-  it 'should have expected marshalling semantics' do
-    @providers.each do |provider|
+  it 'has expected marshalling semantics' do
+    providers.each do |provider|
       name = provider[:name]
       version = provider[:version]
       norm_version = version_parser.normalize(version)
@@ -46,31 +46,31 @@ describe ::Composer::Package::CompletePackage do
     end
   end
 
-  it 'should have expected target dir' do
-      package = described_class.new('a', '1.0.0.0', '1.0')
+  it 'has expected target dir' do
+    package = described_class.new('a', '1.0.0.0', '1.0')
 
-      expect(package.target_dir).to be_nil
+    expect(package.target_dir).to be_nil
 
-      package.target_dir = './../foo/'
-      expect(package.target_dir).to be == 'foo/'
+    package.target_dir = './../foo/'
+    expect(package.target_dir).to be == 'foo/'
 
-      package.target_dir = 'foo/../../../bar/'
-      expect(package.target_dir).to be == 'foo/bar/'
+    package.target_dir = 'foo/../../../bar/'
+    expect(package.target_dir).to be == 'foo/bar/'
 
-      package.target_dir = '../..'
-      expect(package.target_dir).to be == ''
+    package.target_dir = '../..'
+    expect(package.target_dir).to be == ''
 
-      package.target_dir = '..'
-      expect(package.target_dir).to be == ''
+    package.target_dir = '..'
+    expect(package.target_dir).to be == ''
 
-      package.target_dir = '/..'
-      expect(package.target_dir).to be == ''
+    package.target_dir = '/..'
+    expect(package.target_dir).to be == ''
 
-      package.target_dir = '/foo/..'
-      expect(package.target_dir).to be == 'foo/'
+    package.target_dir = '/foo/..'
+    expect(package.target_dir).to be == 'foo/'
 
-      package.target_dir = '/foo/..//bar'
-      expect(package.target_dir).to be == 'foo/bar'
+    package.target_dir = '/foo/..//bar'
+    expect(package.target_dir).to be == 'foo/bar'
   end
 
 end

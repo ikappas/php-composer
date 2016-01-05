@@ -71,7 +71,7 @@ module Composer
             end
 
             if package.respond_to? :dist_sha1_checksum
-              dist_sha1_checksum =  package.dist_sha1_checksum
+              dist_sha1_checksum = package.dist_sha1_checksum
               unless dist_sha1_checksum.nil? || dist_sha1_checksum.empty?
                 data['dist']['shasum'] = dist_sha1_checksum
               end

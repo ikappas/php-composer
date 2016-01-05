@@ -13,7 +13,8 @@
 
 module Composer
   module Package
-    module Loader class HashLoader
+    module Loader
+      class HashLoader
 
         attr_loader :type do |config, package|
           if config.key? 'type'
@@ -88,10 +89,10 @@ module Composer
               package.send(
                 "#{opts[:method]}=",
                 parse_links(
-                    package.name,
-                    package.pretty_version,
-                    opts[:description],
-                    config[type]
+                  package.name,
+                  package.pretty_version,
+                  opts[:description],
+                  config[type]
                 )
               )
             end
@@ -164,11 +165,11 @@ module Composer
               parsed_constraint = @version_parser.parse_constraints(constraint)
             end
             res[target.downcase] = Composer::Package::Link.new(
-                source,
-                target,
-                parsed_constraint,
-                description,
-                constraint
+              source,
+              target,
+              parsed_constraint,
+              description,
+              constraint
             )
           end
           res

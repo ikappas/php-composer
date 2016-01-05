@@ -155,7 +155,7 @@ module Composer
       #   An array of autoloaded packages.
       ##
       def autoload=(autoload)
-          alias_of.autoload(autoload);
+        alias_of.autoload(autoload);
       end
 
       ##
@@ -165,7 +165,7 @@ module Composer
       #   An array of dev autoloaded packages.
       ##
       def dev_autoload=(dev_autoload)
-          alias_of.dev_autoload(dev_autoload)
+        alias_of.dev_autoload(dev_autoload)
       end
 
       ##
@@ -175,7 +175,7 @@ module Composer
       #   An array of stability flags.
       ##
       def stability_flags=(stability_flags)
-          alias_of.stability_flags(stability_flags)
+        alias_of.stability_flags(stability_flags)
       end
 
       ##
@@ -185,7 +185,7 @@ module Composer
       #   An array of suggested packages.
       ##
       def suggests=(suggests)
-          alias_of.suggests(suggests)
+        alias_of.suggests(suggests)
       end
 
       ##
@@ -195,7 +195,7 @@ module Composer
       #   An array of extra packages.
       ##
       def extra=(extra)
-          alias_of.extra(extra)
+        alias_of.extra(extra)
       end
 
       # def __clone

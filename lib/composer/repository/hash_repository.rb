@@ -20,7 +20,6 @@ module Composer
       end
 
       def find_package(name, version = nil)
-
         # normalize name
         name.downcase! unless name.nil?
 
@@ -43,23 +42,22 @@ module Composer
       end
 
       def find_packages(name, version = nil)
+        # normalize name
+        name.downcase! unless name.nil?
 
-          # normalize name
-          name.downcase! unless name.nil?
+        # normalize version
+        unless version.nil?
+          version_parser = ::Composer::Semver::VersionParser.new
+          version = version_parser.normalize(version)
+        end
 
-          # normalize version
-          unless version.nil?
-            version_parser = ::Composer::Semver::VersionParser.new
-            version = version_parser.normalize(version)
+        matches = []
+        packages.each do |package|
+          if package.name === name && (version.nil? || version === package.version)
+            matches.push package
           end
-
-          matches = []
-          packages.each do |package|
-            if package.name === name && (version.nil? || version === package.version)
-              matches.push package
-            end
-          end
-          matches
+        end
+        matches
       end
 
       ##
@@ -172,7 +170,7 @@ module Composer
         packages.each do |repo_package|
           if repo_package.unique_name === package_id
             @packages.delete_at(index)
-            return
+            break
           end
           index = index + 1
         end

@@ -45,7 +45,7 @@ describe ::Composer::Package::AliasPackage do
 
     context ".#{method}" do
 
-      it 'should forward all calls to the aliased package' do
+      it 'forwards all calls to the aliased package' do
         allow(package).to receive(method).twice.and_return(true)
         expect( alias_package.send(method) ).to be == package.send(method)
       end

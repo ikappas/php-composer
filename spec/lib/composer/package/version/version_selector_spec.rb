@@ -39,7 +39,7 @@ describe ::Composer::Package::Version::VersionSelector do
 
       branch_alias_desc = test[:branch_alias] ? " with branch alias #{test[:branch_alias]}" : ''
 
-      it "succeeds on '#{test[:pretty_version]}'#{ branch_alias_desc }" do
+      it "succeeds on '#{test[:pretty_version]}'#{branch_alias_desc}" do
         package = double('Composer::Package::Package')
         allow(package).to receive(:pretty_name).and_return( 'Pretty Name' )
         allow(package).to receive(:pretty_version).and_return( test[:pretty_version] )
@@ -67,7 +67,7 @@ describe ::Composer::Package::Version::VersionSelector do
         allow(package).to receive(:include_paths).and_return( nil )
         allow(package).to receive(:transport_options).and_return( nil )
 
-        branch_alias = !test.key?(:branch_alias) ? [] : { 'branch-alias' => { test[:pretty_version] => test[:branch_alias] }}
+        branch_alias = !test.key?(:branch_alias) ? [] : { 'branch-alias' => { test[:pretty_version] => test[:branch_alias] } }
         allow(package).to receive(:extra).and_return( branch_alias )
 
         expect( selector.find_recommended_require_version(package) ).to be == test[:expected_version]

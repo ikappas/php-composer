@@ -124,7 +124,7 @@ module Composer
             add_repository(repo)
           end
         else
-            @repositories.push(repository)
+          @repositories.push(repository)
         end
       end
     end

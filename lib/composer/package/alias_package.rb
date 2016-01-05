@@ -20,8 +20,7 @@ module Composer
     # @author Ioannis Kappas <ikappas@devworks.gr>
     class AliasPackage < ::Composer::Package::CompletePackage
 
-      attr_reader :alias_of, :requires, :conflicts, :provides, :replaces
-                  :dev_requires
+      attr_reader :alias_of, :requires, :conflicts, :provides, :replaces, :dev_requires
 
       # attr_accessor :repositories, :license, :keywords, :authors,
       #               :description, :homepage, :scripts, :support,
@@ -255,20 +254,20 @@ module Composer
       ##
       def replace_self_version_dependencies(links, link_type)
         if %w{conflicts provides replaces}.include? link_type
-           new_links = []
-           links.each do |link|
-             # link is self.version, but must be replacing also the replaced version
-             if 'self.version' === link.pretty_constraint
-               new_links = ::Composer.Package.Link.new(
-                 link.source,
-                 link.target,
-                 ::Composer::Semver::Constraint::Constraint.new('=', @version),
-                 type,
-                 pretty_version
-               )
-             end
-           end
-           links = links.zip(new_links).flatten.compact
+          new_links = []
+          links.each do |link|
+            # link is self.version, but must be replacing also the replaced version
+            if 'self.version' === link.pretty_constraint
+              new_links = ::Composer.Package.Link.new(
+                link.source,
+                link.target,
+                ::Composer::Semver::Constraint::Constraint.new('=', @version),
+                type,
+                pretty_version
+              )
+            end
+          end
+          links = links.zip(new_links).flatten.compact
         else
           links.each do |index, link|
             # link is self.version, but must be replacing also the replaced version
