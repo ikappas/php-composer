@@ -44,7 +44,7 @@ describe ::Composer::Package::Version::VersionSelector do
         allow(package).to receive(:pretty_name).and_return( 'Pretty Name' )
         allow(package).to receive(:pretty_version).and_return( test[:pretty_version] )
         allow(package).to receive(:version).and_return( parser.normalize(test[:pretty_version]) )
-        allow(package).to receive(:is_dev).and_return( test[:is_dev] )
+        allow(package).to receive(:is_dev?).and_return( test[:is_dev] )
         allow(package).to receive(:stability).and_return( test[:stability] )
         allow(package).to receive(:target_dir).and_return( nil )
         allow(package).to receive(:source_type).and_return( nil )
