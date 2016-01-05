@@ -11,6 +11,8 @@
 
 module Composer
   module Repository
+
+    ##
     # Filesystem repository.
     #
     # PHP Authors:
@@ -19,19 +21,24 @@ module Composer
     #
     # Ruby Authors:
     # Ioannis Kappas <ikappas@devworks.gr>
-    class FilesystemRepository < Composer::Repository::WritableHashRepository
+    ##
+    class FilesystemRepository < ::Composer::Repository::WritableHashRepository
 
+      ##
       # Initializes filesystem repository.
-      # @param [Composer::Json::JsonFile] repository_file repository json file
+      #
+      # @param repository_file Composer::Json::JsonFile
+      #   The repository json file
+      ##
       def initialize(repository_file)
         unless repository_file
           raise ArgumentError,
                 'repository_file must be specified'
         end
-        unless repository_file.is_a?(Composer::Json::JsonFile)
+        unless repository_file.is_a?(::Composer::Json::JsonFile)
           raise TypeError,
-                'repository_file type must be a \
-                Composer::Json::JsonFile or superclass'
+                'repository_file type must be a' \
+                'Composer::Json::JsonFile or superclass'
         end
         super([])
         @file = repository_file
@@ -45,7 +52,7 @@ module Composer
       # Writes writable repository.
       def write
         data = []
-        dumper = Composer::Package::Dumper::HashDumper.new
+        dumper = ::Composer::Package::Dumper::HashDumper.new
 
         canonical_packages.each { |package| data << dumper.dump(package) }
 
@@ -72,7 +79,7 @@ module Composer
                 [#{e.class}] #{e.message}"
         end
 
-        loader = Composer::Package::Loader::HashLoader.new(nil, true)
+        loader = ::Composer::Package::Loader::HashLoader.new(nil, true)
         packages_data.each do |package_data|
           package = loader.load(package_data)
           add_package(package)

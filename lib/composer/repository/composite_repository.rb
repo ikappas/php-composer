@@ -18,7 +18,7 @@ module Composer
     #
     # Ruby Authors:
     # Ioannis Kappas <ikappas@devworks.gr>
-    class CompositeRepository < Composer::Repository::BaseRepository
+    class CompositeRepository < ::Composer::Repository::BaseRepository
       # Initializes filesystem repository.
       # @param [Array] repositories An array of repositories.
       def initialize(repositories)
@@ -114,12 +114,12 @@ module Composer
           raise ArgumentError,
                 'repository must be specified'
         end
-        unless repository.is_a?(Composer::Repository::BaseRepository)
+        unless repository.is_a?(::Composer::Repository::BaseRepository)
           raise TypeError,
                 'repository type must be a \
                 Composer::Repository::BaseRepository or superclass'
         end
-        if repository.instance_of?(Composer::Repository::CompositeRepository)
+        if repository.instance_of?(::Composer::Repository::CompositeRepository)
           repository.repositories.each do |repo|
             add_repository(repo)
           end
